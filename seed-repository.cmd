@@ -16,19 +16,19 @@ IF NOT EXIST "Tools" (
 
 IF NOT EXIST Tools\GlobalSettings (
 	powershell write-host -fore Yellow "Adding Global Settings Submodule from git."
-	git submodule add -f https://gitserver.home/AnoriGit/GlobalSettings.git Tools/GlobalSettings
+	git submodule add -f https://github.com/anorisoft/Cake.GlobalSettings.git Tools/GlobalSettings
 	powershell write-host
 )
 
 IF NOT EXIST Tools\RepositoryTemplate (
 	powershell write-host -fore Yellow "Adding Repository Template Submodule from git."
-	git submodule add -f https://gitserver.home/AnoriGit/RepositoryTemplate.git Tools/RepositoryTemplate
+	git submodule add -f https://github.com/anorisoft/RepositorySeed.gir Tools/RepositoryTemplate
 	powershell write-host
 )
 
 IF NOT EXIST "Tools\Resources" (
 	powershell write-host -fore Yellow "Adding Resources Submodule from git.
-	git submodule add -f https://github.com/cake-build/resources.git Tools/Resources
+	git submodule add -f https://github.com/anorisoft/Cake.Resources.git Tools/Resources
 	powershell write-host
 )
 
