@@ -4,8 +4,8 @@
 // Author: Martin Egli
 // Description: The file makes it possible to centrally control the cake process of all repositories.
 
-public static void Seed_1_0(ICakeContext context)
+public void Seed_1_0()
 	{
-		context.Information("Start Seed 1.0");
+		Information("Start Seed 1.0");
 	}
 

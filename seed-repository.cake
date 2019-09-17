@@ -44,12 +44,13 @@ Task("Seed")
 			Information("RepositorySetting: {0} is exists", repositorySettingFilePath);
 			var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
 			Information("Version: {0}", repositoryTemplateSetting.Version);
-			Seed_1_0(context: Context);
+			Seed_1_0();
 		}
 		else
 		{
 			var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
 			Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
+			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
 		}
 	});
 
