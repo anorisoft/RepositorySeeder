@@ -1,0 +1,11 @@
+///////////////////////////////////////////////////////////////////////////////
+// GLOBAL SEED
+///////////////////////////////////////////////////////////////////////////////
+// Author: Martin Egli
+// Description: The file makes it possible to centrally control the cake process of all repositories.
+
+public static void Seed_1_0(ICakeContext context)
+	{
+		context.Information("Start Seed 1.0");
+	}
+

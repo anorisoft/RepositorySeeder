@@ -8,6 +8,7 @@
 #addin nuget:?package=Newtonsoft.Json&version=11.0.2
 
 #load ./Tools/GlobalSettings/Addins.cake
+#load ./Tools/SeedRepository/Scripts/seed-repository_1.0.cake
 
 Environment.SetVariableNames();
 
@@ -43,6 +44,7 @@ Task("Seed")
 			Information("RepositorySetting: {0} is exists", repositorySettingFilePath);
 			var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
 			Information("Version: {0}", repositoryTemplateSetting.Version);
+			Seed_1_0(context: Context);
 		}
 		else
 		{
