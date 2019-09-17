@@ -31,26 +31,16 @@ public class RepositoryTemplateSetting{
 Task("Seed")
 	.Does(() => 
 	{
-		Information("Target: {0}", BuildParameters.Target);
-		Information("Seed!");
-		var source = new DirectoryPath("Tools/RepositoryTemplate/Template");
-		Information("Source: {0}", source);
 		var target = BuildParameters.RootDirectoryPath;
-		Information("Target: {0}", target);
-		CopyDirectory​(source, target);
 		var repositorySettingFilePath = target.GetFilePath(".repository");
-		Information("RepositorySetting: {0}", repositorySettingFilePath);
 		if (System.IO.File.Exists(repositorySettingFilePath.FullPath)){
-			Information("RepositorySetting: {0} is exists", repositorySettingFilePath);
+			Information("Repository is alresdy seeded!");
 			var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
 			Information("Version: {0}", repositoryTemplateSetting.Version);
-			Seed_1_0();
 		}
 		else
 		{
-			var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
-			Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
-			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
+			Seed_1_0();
 		}
 	});
 
