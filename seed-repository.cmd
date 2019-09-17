@@ -22,7 +22,7 @@ IF NOT EXIST Tools\GlobalSettings (
 
 IF NOT EXIST Tools\RepositoryTemplate (
 	powershell write-host -fore Yellow "Adding Repository Template Submodule from git."
-	git submodule add -f https://github.com/anorisoft/RepositorySeed.gir Tools/RepositoryTemplate
+	git submodule add -f https://github.com/anorisoft/RepositorySeed.git Tools/RepositoryTemplate
 	powershell write-host
 )
 
