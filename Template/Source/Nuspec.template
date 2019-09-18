@@ -16,12 +16,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags />
     <dependencies>
-      <dependency id="Anori.Prism.WPF.SplashScreen.Interfaces" version="1.1.2" />
-      <dependency id="Anori.Prism.WPF.Unity" version="1.1.6" />
-      <dependency id="Anori.WPF.Windows" version="1.1.0" />
       <dependency id="JetBrains.Annotations" version="2018.3.0" />
-      <dependency id="Prism.Unity" version="7.1.0.431" />
-      <dependency id="WPFLocalizeExtension" version="3.3.1" />
     </dependencies>
   </metadata>
 </package>

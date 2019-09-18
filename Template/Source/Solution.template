@@ -8,7 +8,7 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "%Solution_Name%", "%Main_Project_Name%\%Main_Project_Name%.csproj", "{%Main_Project_GUID%}"
 EndProject
-Project("{%Solution_Project_GUID%}") = "Build Items", "Build Items", "{%Build_Items_GUID%}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Items", "Build Items", "{%Build_Items_GUID%}"
 	ProjectSection(SolutionItems) = preProject
 		..\build.cake = ..\build.cake
 		..\README.md = ..\README.md
@@ -17,9 +17,11 @@ Project("{%Solution_Project_GUID%}") = "Build Items", "Build Items", "{%Build_It
 		..\Run.cmd = ..\Run.cmd
 		..\RunNuGet.cake = ..\RunNuGet.cake
 		..\RunNuGet.cmd = ..\RunNuGet.cmd
+		..\Source\%Solution_Name%.nuspec = ..\Source\%Solution_Name%.nuspec
+
 	EndProjectSection
 EndProject
-Project("{%Solution_Project_GUID%}") = "Tools Items", "Tools Items", "{%Tools_Items_GUID%}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools Items", "Tools Items", "{%Tools_Items_GUID%}"
 	ProjectSection(SolutionItems) = preProject
 		..\Tools\clone-global-settings.cmd = ..\Tools\clone-global-settings.cmd
 		..\Tools\clone-resources.cmd = ..\Tools\clone-resources.cmd
