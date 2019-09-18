@@ -5,7 +5,7 @@ Environment.SetVariableNames();
 BuildParameters.SetParameters(
 	context: Context,
 	buildSystem: BuildSystem,
-	title: "%ProjectRepository%",
+	title: "%Main_Project_Name%",
 	shouldRunDupFinder: false
 );
 
