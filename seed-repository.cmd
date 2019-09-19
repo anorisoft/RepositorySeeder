@@ -1,9 +1,9 @@
 @echo off
 rem ***************************************************************************
-rem * Seed script for repository
+rem * Repository seeder script
 rem ***************************************************************************
 powershell write-host -fore Cyan  ***************************************************************************
-powershell write-host -fore Cyan "Seed script for repositories"
+powershell write-host -fore Cyan "* Repository seeder script"
 powershell write-host -fore Cyan  ***************************************************************************
 powershell write-host
 
@@ -20,9 +20,9 @@ IF NOT EXIST Tools\GlobalSettings (
 	powershell write-host
 )
 
-IF NOT EXIST Tools\SeedRepository (
-	powershell write-host -fore Yellow "Adding Repository Template Submodule from git."
-	git submodule add -f https://github.com/anorisoft/RepositorySeed.git Tools/SeedRepository
+IF NOT EXIST Tools\RepositorySeeder (
+	powershell write-host -fore Yellow "Adding Repository Seeder Submodule from git."
+	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/RepositorySeeder
 	powershell write-host
 )
 
@@ -35,15 +35,15 @@ IF NOT EXIST "Tools\Resources" (
 IF EXIST "Tools\Resources" (
 	IF EXIST "Tools\GlobalSettings" (
 		IF EXIST "Tools\GlobalSettings" (
-			IF EXIST "Tools\SeedRepository" (
-				COPY Tools\SeedRepository\seed-repository.cake
+			IF EXIST "Tools\RepositorySeeder" (
+				COPY Tools\RepositorySeeder\seed-repository.cake
 rem				powershell .\Tools\Resources\build.ps1 -Script Seed.cake -Verbosity Diagnostic -Target Seed
 				powershell .\Tools\Resources\build.ps1 -Script seed-repository.cake -Target Seed
 			) ELSE (
 				powershell write-host -fore Red "File Tools\GlobalSettings\seed-repository.cake not exist."
 			)
 		) ELSE (
-			powershell write-host -fore Red "Directory Tools\SeedRepository not exist."
+			powershell write-host -fore Red "Directory Tools\RepositorySeeder not exist."
 		)
 	) ELSE (
 		powershell write-host -fore Red "Directory Tools\GlobalSettings not exist."
