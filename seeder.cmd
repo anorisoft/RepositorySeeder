@@ -18,6 +18,9 @@ IF NOT EXIST Tools\RepositorySeeder (
 	powershell write-host -fore Yellow "Adding Repository Seeder Submodule from git."
 	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/RepositorySeeder
 	powershell write-host
+) ELSE (
+	powershell write-host -fore Yellow "Updating Repository Seeder Submodule from git."
+	git submodule update -f --init Tools/RepositorySeeder
 )
 
 IF EXIST "Tools\RepositorySeeder" (
