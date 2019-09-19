@@ -25,4 +25,21 @@ IF EXIST "Tools\RepositorySeeder" (
 ) ELSE (
   powershell write-host -fore Red "Directory Tools\RepositorySeeder not exist."
 )
+
+:choice
+set /P c=Are you sure you want to delet seeder.cmd file [Y/N]?
+if /I "%c%" EQU "Y" goto :YES
+if /I "%c%" EQU "N" goto :NO
+goto :choice
+
+
+:YES
+
+echo "Deleting seeder.cmd"
+DEL /f seeder.cmd
 pause
+exit
+
+:NO
+exit
+
