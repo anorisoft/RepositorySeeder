@@ -28,20 +28,43 @@ public class RepositoryTemplateSetting{
 	public DateTime Created {get; set;}
 }
 
-Task("Seed")
+var isAlreadySeeded = false;
+float seedVersion = 0;
+
+Task("InitializeSeeder")
 	.Does(() => 
 	{
 		var target = BuildParameters.RootDirectoryPath;
 		var repositorySettingFilePath = target.GetFilePath(".repository");
 		if (System.IO.File.Exists(repositorySettingFilePath.FullPath)){
 			Information("Repository is alresdy seeded!");
+			isAlreadySeeded = true;
 			var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
 			Information("Version: {0}", repositoryTemplateSetting.Version);
+			seedVersion = float.Parse(repositoryTemplateSetting.Version);
 		}
-		else
-		{
-			Seed_1_0();
-		}
+	});
+	
+Task("Seed_1_0")
+	.WithCriteria(!isAlreadySeeded)
+	.Does(() => 
+	{
+		Seed_1_0();
+	});
+
+Task("Update_2_0")
+	.WithCriteria(isAlreadySeeded)
+	.WithCriteria(seedVersion < 2.0)
+	.Does(() => 
+	{
+	});
+
+Task("Seed")
+	.IsDependentOn("InitializeSeeder")
+	.IsDependentOn("Seed_1_0")
+	.IsDependentOn("Update_2_0")
+	.Does(() => 
+	{
 	});
 
 Build.Run();
