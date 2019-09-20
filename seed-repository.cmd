@@ -40,7 +40,7 @@ IF EXIST "Tools\Resources" (
 rem				powershell .\Tools\Resources\build.ps1 -Script Seed.cake -Verbosity Diagnostic -Target Seed
 				powershell .\Tools\Resources\build.ps1 -Script seed-repository.cake -Target Seed
 			) ELSE (
-				powershell write-host -fore Red "File Tools\GlobalSettings\seed-repository.cake not exist."
+				powershell write-host -fore Red "File Tools\RepositorySeeder\seed-repository.cake not exist."
 			)
 		) ELSE (
 			powershell write-host -fore Red "Directory Tools\RepositorySeeder not exist."
