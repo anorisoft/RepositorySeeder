@@ -1,9 +1,9 @@
 @echo off
 rem ***************************************************************************
-rem * Repository seeder script
+rem * Repository seeder script 1.0
 rem ***************************************************************************
 powershell write-host -fore Cyan  ***************************************************************************
-powershell write-host -fore Cyan "* Repository seeder script"
+powershell write-host -fore Cyan "* Repository seeder script 1.0"
 powershell write-host -fore Cyan  ***************************************************************************
 powershell write-host
 
