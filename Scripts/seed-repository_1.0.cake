@@ -24,12 +24,7 @@ public void Seed_1_0()
 		Information("Target: {0}", target);
 		CopyDirectory​(source, target);
 		
-		// .repository
-		var repositorySettingFilePath = target.GetFilePath(".repository");
-		Information("RepositorySetting: {0}", repositorySettingFilePath);
-		
-		var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
-		Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
+		CreateRepositorySetting(target);
 		
 		// build.cake
 		var buildCakeTemplateFilePath = target.GetFilePath("build.cake.template");
