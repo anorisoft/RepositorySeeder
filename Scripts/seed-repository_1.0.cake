@@ -43,13 +43,41 @@ public void Seed_1_0()
 		Information("Target: {0}", target);
 		CopyDirectory​(source, target);
 		
+		// .repository
 		var repositorySettingFilePath = target.GetFilePath(".repository");
 		Information("RepositorySetting: {0}", repositorySettingFilePath);
 		
 		var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
 		Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
 		
+		// build.cake
+		var buildCakeTemplateFilePath = target.GetFilePath("build.cake.template");
+		if(!System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))
+		{
+			return;
+		}
 		
+		var buildCakeFilePath = target.GetFilePath("build.cake");
+		if (System.IO.File.Exists(buildCakeFilePath.FullPath))
+		{
+			System.IO.File.Delete(buildCakeFilePath.FullPath);
+		}
+		
+		Information("Create build.cake File {0}", buildCakeFilePath);
+		var buildCakeString = System.IO.File.ReadAllText(buildCakeTemplateFilePath.FullPath);
+		var buildCakeStringBuilder = new StringBuilder(buildCakeString);
+		buildCakeStringBuilder.Replace("%Solution_Name%", repositoryName);
+		buildCakeStringBuilder.Replace("%Main_Project_Name%", repositoryName);
+		System.IO.File.WriteAllText(buildCakeFilePath.FullPath, buildCakeStringBuilder.ToString());
+		
+		if (System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))
+		{
+			Information("Remove build.cake Template File {0}", buildCakeTemplateFilePath.FullPath);
+			//System.IO.File.Delete(buildCakeTemplateFilePath.FullPath);
+		}
+		
+		
+		// Solution
 		var solutionTemplateFilePath = target.Combine("Source").GetFilePath("Solution.template");
 		if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
 		{
@@ -82,7 +110,7 @@ public void Seed_1_0()
 			//System.IO.File.Delete(solutionTemplateFilePath.FullPath);
 		}
 		
-		
+		// Nuspec
 		var nuspecTemplateFilePath = target.Combine("Source").GetFilePath("Nuspec.template");
 		if(!System.IO.File.Exists(nuspecTemplateFilePath.FullPath))
 		{
