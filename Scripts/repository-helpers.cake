@@ -5,6 +5,13 @@
 
 public string GetMyRepositoryName()
 	{
+		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
+		var remote = branch.Remotes.Where((r) => r.Name.ToLower() == "origin").FirstOrDefault();
+		if(remote == null)
+		{
+			remote = branch.Remotes.FirstOrDefault();
+		}
+	
 		Information("Remote Name: {0}", remote.Name);
 		Information("Remote Url: {0}", remote.Url);
 		var url = new System.Uri(remote.Url);

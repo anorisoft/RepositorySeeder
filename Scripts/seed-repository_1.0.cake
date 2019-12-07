@@ -14,13 +14,6 @@ public void Seed_1_0()
 		Information("Start Seed 1.0");
 		Information("Target: {0}", BuildParameters.Target);
 		Information("Seed!");
-		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
-		var remote = branch.Remotes.Where((r) => r.Name.ToLower() == "origin").FirstOrDefault();
-		if(remote == null)
-		{
-			remote = branch.Remotes.FirstOrDefault();
-		}
-		
 		
 		var repositoryName = GetMyRepositoryName();
 		
