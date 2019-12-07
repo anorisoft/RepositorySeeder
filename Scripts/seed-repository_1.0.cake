@@ -22,8 +22,18 @@ public void Seed_1_0()
 		var url = new System.Uri(remote.Url);
 		var path = url.AbsolutePath;
 		var startIndex = path.LastIndexOf(@"/") + 1;
-		var length = path.LastIndexOf(@".") - startIndex;
-		var repositoryName = path.Substring(startIndex, length);
+		var repositoryName = "";
+		var index = path.LastIndexOf(@".git");
+		if (index > startIndex)
+		{
+			var length = index - startIndex;
+			repositoryName = path.Substring(startIndex, length);
+		}
+		else
+		{
+			var length = path.Length - startIndex;
+			repositoryName = path.Substring(startIndex, length);
+		}
 		Information("Repository Name: {0}", repositoryName);
 		
 		var source = new DirectoryPath("Tools/SeedRepository/Template");
