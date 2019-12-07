@@ -4,6 +4,11 @@
 // Author: Martin Egli
 // Description: The file makes it possible to centrally control the cake process of all repositories.
 
+#load ./Tools/SeedRepository/Scripts/repository-helpers.cake
+#load ./Tools/SeedRepository/Scripts/nuspec-helpers.cake
+#load ./Tools/SeedRepository/Scripts/solution-helpers.cake
+#load ./Tools/SeedRepository/Scripts/project-helpers.cake
+
 public void Seed_1_0()
 	{
 		Information("Start Seed 1.0");
@@ -17,24 +22,7 @@ public void Seed_1_0()
 		}
 		
 		
-		Information("Remote Name: {0}", remote.Name);
-		Information("Remote Url: {0}", remote.Url);
-		var url = new System.Uri(remote.Url);
-		var path = url.AbsolutePath;
-		var startIndex = path.LastIndexOf(@"/") + 1;
-		var repositoryName = "";
-		var index = path.LastIndexOf(@".git");
-		if (index > startIndex)
-		{
-			var length = index - startIndex;
-			repositoryName = path.Substring(startIndex, length);
-		}
-		else
-		{
-			var length = path.Length - startIndex;
-			repositoryName = path.Substring(startIndex, length);
-		}
-		Information("Repository Name: {0}", repositoryName);
+		var repositoryName = GetMyRepositoryName();
 		
 		var source = new DirectoryPath("Tools/SeedRepository/Template");
 		Information("Source: {0}", source);
