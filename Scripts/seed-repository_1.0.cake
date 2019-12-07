@@ -4,10 +4,10 @@
 // Author: Martin Egli
 // Description: The file makes it possible to centrally control the cake process of all repositories.
 
-#load ./Tools/SeedRepository/Scripts/repository-helpers.cake
-#load ./Tools/SeedRepository/Scripts/nuspec-helpers.cake
-#load ./Tools/SeedRepository/Scripts/solution-helpers.cake
-#load ./Tools/SeedRepository/Scripts/project-helpers.cake
+#load ./repository-helpers.cake
+#load ./nuspec-helpers.cake
+#load ./solution-helpers.cake
+#load ./project-helpers.cake
 
 public void Seed_1_0()
 	{
