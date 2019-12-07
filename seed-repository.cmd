@@ -22,7 +22,7 @@ IF NOT EXIST Tools\GlobalSettings (
 
 IF NOT EXIST Tools\RepositorySeeder (
 	powershell write-host -fore Yellow "Adding Repository Seeder Submodule from git."
-	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/RepositorySeeder
+	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/SeedRepository
 	powershell write-host
 )
 
@@ -35,15 +35,15 @@ IF NOT EXIST "Tools\Resources" (
 IF EXIST "Tools\Resources" (
 	IF EXIST "Tools\GlobalSettings" (
 		IF EXIST "Tools\GlobalSettings" (
-			IF EXIST "Tools\RepositorySeeder" (
-				COPY Tools\RepositorySeeder\seed-repository.cake
+			IF EXIST "Tools\SeedRepository" (
+				COPY Tools\SeedRepository\seed-repository.cake
 rem				powershell .\Tools\Resources\build.ps1 -Script Seed.cake -Verbosity Diagnostic -Target Seed
 				powershell .\Tools\Resources\build.ps1 -Script seed-repository.cake -Target Seed
 			) ELSE (
-				powershell write-host -fore Red "File Tools\RepositorySeeder\seed-repository.cake not exist."
+				powershell write-host -fore Red "File Tools\SeedRepository\seed-repository.cake not exist."
 			)
 		) ELSE (
-			powershell write-host -fore Red "Directory Tools\RepositorySeeder not exist."
+			powershell write-host -fore Red "Directory Tools\SeedRepository not exist."
 		)
 	) ELSE (
 		powershell write-host -fore Red "Directory Tools\GlobalSettings not exist."
