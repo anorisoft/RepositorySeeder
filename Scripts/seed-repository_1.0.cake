@@ -24,7 +24,7 @@ public void Seed_1_0()
 		
 		var repositorySetting = CreateRepositorySetting(target, repositoryName);
 		
-		var solutionSetting = new SolutionSetting(repositoryName, repositoryName);
+		var solutionSetting = new SolutionSetting(repositoryName);
 		
 		CreateBuildCake(target, solutionSetting);
 		

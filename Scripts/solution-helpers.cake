@@ -15,6 +15,8 @@ public class SolutionSetting
 		ToolsItemsGuid = Guid.NewGuid();
 	}
 	
+	public SolutionSetting(string mainProjectName) : this(mainProjectName, mainProjectName){}
+	
 	public string MainProjectName {get; set;}
 	public string SolutionName {get; set;}
 	public Guid MainProjectGuid {get; set;}
