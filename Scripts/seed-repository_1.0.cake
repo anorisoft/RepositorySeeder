@@ -17,25 +17,14 @@ public void Seed_1_0()
 		Information("Seed!");
 		
 		var repositoryName = GetMyRepositoryName();
-		
-		var source = new DirectoryPath("Tools/SeedRepository/Template");
-		Information("Source: {0}", source);
-		
 		var target = BuildParameters.RootDirectoryPath;
 		Information("Target: {0}", target);
-		CopyDirectory​(source, target);
+		
+		CopyTemplates(target);
 		
 		var repositorySetting = CreateRepositorySetting(target, repositoryName);
 		
-		var solutionSetting = new SolutionSetting()
-		{
-			MainProjectName = repositoryName,
-			MainProjectGuid = Guid.NewGuid(),
-			SolutionName = repositoryName,
-			SolutionGuid = Guid.NewGuid(),
-			BuildItemsGuid = Guid.NewGuid(),
-			ToolsItemsGuid = Guid.NewGuid()
-		};
+		var solutionSetting = new SolutionSetting(repositoryName, repositoryName);
 		
 		CreateBuildCake(target, solutionSetting);
 		

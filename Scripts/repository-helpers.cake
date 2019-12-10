@@ -80,3 +80,11 @@ public bool TryGetRepositorySetting(DirectoryPath target, out RepositorySetting 
 		return false;
 	}
 }
+
+public bool CopyTemplates(DirectoryPath target)
+{
+	var source = new DirectoryPath("Tools/SeedRepository/Template");
+	Information("Source: {0}", source);
+	
+	CopyDirectory​(source, target);
+}

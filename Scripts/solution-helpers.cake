@@ -5,6 +5,16 @@
 
 public class SolutionSetting
 {
+	public SolutionSetting(string mainProjectName, string solutionName)
+	{
+		MainProjectName = mainProjectName;
+		MainProjectGuid = Guid.NewGuid();
+		SolutionName = solutionName;
+		SolutionGuid = Guid.NewGuid();
+		BuildItemsGuid = Guid.NewGuid();
+		ToolsItemsGuid = Guid.NewGuid();
+	}
+	
 	public string MainProjectName {get; set;}
 	public string SolutionName {get; set;}
 	public Guid MainProjectGuid {get; set;}
