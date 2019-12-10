@@ -41,35 +41,8 @@ public void Seed_1_0()
 		
 		CreateSolution16(target, solutionSetting);
 		
-		// Nuspec
-		var nuspecTemplateFilePath = target.Combine("Source").GetFilePath("Nuspec.template");
-		if(!System.IO.File.Exists(nuspecTemplateFilePath.FullPath))
-		{
-			return;
-		}
+		CreateNuspec(target, solutionSetting);
 		
-		var nuspecFilePath = target.Combine("Source").GetFilePath(repositoryName + ".nuspec");
-		if (System.IO.File.Exists(nuspecFilePath.FullPath))
-		{
-			System.IO.File.Delete(nuspecFilePath.FullPath);
-		}
-		Information("Create Nuspec File {0}", nuspecFilePath);
-		var nuspecString = System.IO.File.ReadAllText(nuspecTemplateFilePath.FullPath);
-		var nuspecStringBuilder = new StringBuilder(nuspecString);
-		nuspecStringBuilder.Replace("%Solution_Name%", repositoryName);
-		nuspecStringBuilder.Replace("%Main_Project_Name%", repositoryName);
-		nuspecStringBuilder.Replace("%Main_Project_GUID%", Guid.NewGuid().ToString());
-		nuspecStringBuilder.Replace("%Solution_Project_GUID%", Guid.NewGuid().ToString());
-		nuspecStringBuilder.Replace("%Build_Items_GUID%", Guid.NewGuid().ToString());
-		nuspecStringBuilder.Replace("%Tools_Items_GUID%", Guid.NewGuid().ToString());
-		nuspecStringBuilder.Replace("%Solution_GUID%", Guid.NewGuid().ToString());
-		System.IO.File.WriteAllText(nuspecFilePath.FullPath, nuspecStringBuilder.ToString());
-		
-		if (System.IO.File.Exists(nuspecTemplateFilePath.FullPath))
-		{
-			Information("Remove Nuspec Template File {0}", nuspecTemplateFilePath.FullPath);
-			//System.IO.File.Delete(nuspecTemplateFilePath.FullPath);
-		}
 		
 		Information("Comit Repository Seeding");
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
