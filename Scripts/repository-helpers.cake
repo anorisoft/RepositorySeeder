@@ -49,7 +49,7 @@ public bool IsRepositorySettingExists(DirectoryPath target)
 	return System.IO.File.Exists(repositorySettingFilePath.FullPath);
 }
 
-public bool TryGetRepositorySettingExists(DirectoryPath target, out RepositoryTemplateSetting setting)
+public bool TryGetRepositorySetting(DirectoryPath target, out RepositoryTemplateSetting setting)
 {
 	setting = null;
 	try

@@ -9,6 +9,7 @@
 
 #load ./Tools/GlobalSettings/Addins.cake
 #load ./Tools/SeedRepository/Scripts/seed-repository_1.0.cake
+#load ./Tools/SeedRepository/Scripts/repository-helpers.cake
 
 Environment.SetVariableNames();
 
@@ -35,7 +36,7 @@ Task("InitializeSeeder")
 	.Does(() => 
 	{
 		var target = BuildParameters.RootDirectoryPath;
-		if (TryGetRepositorySettingExists(target, out var repositoryTemplateSetting)){
+		if (TryGetRepositorySetting(target, out var repositoryTemplateSetting)){
 			Information("Repository is alresdy seeded!");
 			isAlreadySeeded = true;
 			Information("Version: {0}", repositoryTemplateSetting.Version);
