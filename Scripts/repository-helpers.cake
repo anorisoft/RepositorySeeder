@@ -3,6 +3,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 
+public class RepositorySetting{
+	public string Version {get; set;}
+	public DateTime Created {get; set;}
+	public string Name {get; set;}
+}
+
+
 public string GetMyRepositoryName()
 {
 	var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
@@ -32,15 +39,17 @@ public string GetMyRepositoryName()
 	return repositoryName;
 }
 
-public void CreateRepositorySetting(DirectoryPath target)
+public RepositorySetting CreateRepositorySetting(DirectoryPath target, string repositoryName)
 {
 	// .repository
 	var repositorySettingFilePath = target.GetFilePath(".repository");
 	Information("Create repositorySetting file {0}", repositorySettingFilePath);
 	
-	var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
-	Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
-	
+	var repositorySetting = new RepositorySetting { Version = "1.0",
+																	Created = DateTime.Now, 
+																	Name = repositoryName};
+	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
+	return repositorySetting;
 }
 
 public bool IsRepositorySettingExists(DirectoryPath target)

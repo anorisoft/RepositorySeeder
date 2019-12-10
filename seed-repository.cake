@@ -24,10 +24,6 @@ BuildParameters.SetParameters(
 
 ToolSettings.SetToolSettings(context: Context);
 
-public class RepositoryTemplateSetting{
-	public string Version {get; set;}
-	public DateTime Created {get; set;}
-}
 
 var isAlreadySeeded = false;
 float seedVersion = 0;
@@ -59,6 +55,22 @@ Task("Update_2_0")
 	});
 
 Task("Seed")
+	.IsDependentOn("InitializeSeeder")
+	.IsDependentOn("Seed_1_0")
+	.IsDependentOn("Update_2_0")
+	.Does(() => 
+	{
+	});
+	
+Task("Seed_VS16_Framework472")
+	.IsDependentOn("InitializeSeeder")
+	.IsDependentOn("Seed_1_0")
+	.IsDependentOn("Update_2_0")
+	.Does(() => 
+	{
+	});
+	
+Task("Seed_VS16_Framework472_WPF")
 	.IsDependentOn("InitializeSeeder")
 	.IsDependentOn("Seed_1_0")
 	.IsDependentOn("Update_2_0")
