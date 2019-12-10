@@ -30,7 +30,7 @@ public void Seed_1_0()
 		{
 			MainProjectName = repositoryName,
 			MainProjectGuid = Guid.NewGuid(),
-			SolutionName = repositoryName
+			SolutionName = repositoryName,
 			SolutionGuid = Guid.NewGuid(),
 			BuildItemsGuid = Guid.NewGuid(),
 			ToolsItemsGuid = Guid.NewGuid()

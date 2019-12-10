@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 
-pulic class SolutionSetting
+public class SolutionSetting
 {
 	public string MainProjectName {get; set;}
 	public string SolutionName {get; set;}
@@ -22,7 +22,7 @@ public void CreateSolution16(DirectoryPath target, SolutionSetting setting)
 		return;
 	}
 	
-	var solutionFilePath = target.Combine("Source").GetFilePath(repositoryName + ".sln");
+	var solutionFilePath = target.Combine("Source").GetFilePath(setting.SolutionName + ".sln");
 	if (System.IO.File.Exists(solutionFilePath.FullPath))
 	{
 		System.IO.File.Delete(solutionFilePath.FullPath);
@@ -58,7 +58,7 @@ public void CreateSolution15(DirectoryPath target, SolutionSetting setting)
 		return;
 	}
 	
-	var solutionFilePath = target.Combine("Source").GetFilePath(repositoryName + ".sln");
+	var solutionFilePath = target.Combine("Source").GetFilePath(setting.SolutionName + ".sln");
 	if (System.IO.File.Exists(solutionFilePath.FullPath))
 	{
 		System.IO.File.Delete(solutionFilePath.FullPath);
