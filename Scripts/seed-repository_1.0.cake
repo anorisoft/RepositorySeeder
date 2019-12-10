@@ -8,6 +8,7 @@
 #load ./nuspec-helpers.cake
 #load ./solution-helpers.cake
 #load ./project-helpers.cake
+#load ./build-cake-helpers.cake
 
 public void Seed_1_0()
 	{
