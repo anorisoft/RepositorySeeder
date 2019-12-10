@@ -16,7 +16,7 @@ public void CreateProjectFramework472(DirectoryPath target, SolutionSetting sett
 	var mainProjectDirectory = target.Combine(setting.MainProjectName);
 	if (!System.IO.Directory.Exists(mainProjectDirectory.FullPath))
 	{
-		System.IO.Directory.CreateDirectory(mainProjectDirectory);
+		System.IO.Directory.CreateDirectory(mainProjectDirectory.FullPath);
 	}
 	
 	var projectFilePath = mainProjectDirectory.GetFilePath(setting.MainProjectName + ".csproj");
