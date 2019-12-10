@@ -30,6 +30,8 @@ public void Seed_1_0()
 		
 		CreateSolution16(target, solutionSetting);
 		
+		CreateProjectFramework472(target, solutionSetting);
+		
 		CreateNuspec(target, solutionSetting);
 		
 		Information("Comit Repository Seeding");
