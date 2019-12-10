@@ -32,7 +32,6 @@ public void Seed_1_0()
 		
 		CreateNuspec(target, solutionSetting);
 		
-		
 		Information("Comit Repository Seeding");
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
 		
