@@ -11,7 +11,6 @@ public string GetMyRepositoryName()
 	{
 		remote = branch.Remotes.FirstOrDefault();
 	}
-
 	Information("Remote Name: {0}", remote.Name);
 	Information("Remote Url: {0}", remote.Url);
 	var url = new System.Uri(remote.Url);
@@ -37,9 +36,39 @@ public void CreateRepositorySetting(DirectoryPath target)
 {
 	// .repository
 	var repositorySettingFilePath = target.GetFilePath(".repository");
-	Information("RepositorySetting: {0}", repositorySettingFilePath);
+	Information("Create repositorySetting file {0}", repositorySettingFilePath);
 	
 	var repositoryTemplateSetting = new RepositoryTemplateSetting { Version = "1.0", Created = DateTime.Now};
 	Context.SerializeJsonToPrettyFile<RepositoryTemplateSetting>(repositorySettingFilePath, repositoryTemplateSetting);
 	
+}
+
+public bool IsRepositorySettingExists(DirectoryPath target)
+{
+	var repositorySettingFilePath = target.GetFilePath(".repository");
+	return System.IO.File.Exists(repositorySettingFilePath.FullPath);
+}
+
+public bool TryGetRepositorySettingExists(DirectoryPath target, out RepositoryTemplateSetting setting)
+{
+	setting = null;
+	try
+		{
+		var repositorySettingFilePath = target.GetFilePath(".repository");
+		if (!System.IO.File.Exists(repositorySettingFilePath.FullPath))
+		{
+			return false;
+		}
+		var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
+		if (repositoryTemplateSetting == null)
+		{
+			return false;
+		}
+		setting = repositoryTemplateSetting;
+		return true;
+	}
+	catch
+	{
+		return false;
+	}
 }

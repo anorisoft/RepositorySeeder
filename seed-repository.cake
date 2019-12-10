@@ -35,11 +35,9 @@ Task("InitializeSeeder")
 	.Does(() => 
 	{
 		var target = BuildParameters.RootDirectoryPath;
-		var repositorySettingFilePath = target.GetFilePath(".repository");
-		if (System.IO.File.Exists(repositorySettingFilePath.FullPath)){
+		if (TryGetRepositorySettingExists(target, out var repositoryTemplateSetting)){
 			Information("Repository is alresdy seeded!");
 			isAlreadySeeded = true;
-			var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
 			Information("Version: {0}", repositoryTemplateSetting.Version);
 			seedVersion = float.Parse(repositoryTemplateSetting.Version);
 		}
