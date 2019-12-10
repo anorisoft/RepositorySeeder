@@ -58,7 +58,7 @@ public bool IsRepositorySettingExists(DirectoryPath target)
 	return System.IO.File.Exists(repositorySettingFilePath.FullPath);
 }
 
-public bool TryGetRepositorySetting(DirectoryPath target, out RepositoryTemplateSetting setting)
+public bool TryGetRepositorySetting(DirectoryPath target, out RepositorySetting setting)
 {
 	setting = null;
 	try
@@ -68,12 +68,11 @@ public bool TryGetRepositorySetting(DirectoryPath target, out RepositoryTemplate
 		{
 			return false;
 		}
-		var repositoryTemplateSetting = Context.DeserializeJsonFromFile<RepositoryTemplateSetting>(repositorySettingFilePath);
-		if (repositoryTemplateSetting == null)
+		setting = Context.DeserializeJsonFromFile<RepositorySetting>(repositorySettingFilePath);
+		if (setting == null)
 		{
 			return false;
 		}
-		setting = repositoryTemplateSetting;
 		return true;
 	}
 	catch
