@@ -7,7 +7,7 @@ public void CreateProjectFramework472(DirectoryPath target, SolutionSetting sett
 {
 	// Solution
 	var projectTemplateFilePath = target.Combine("Source").GetFilePath("Project.Framework.4.7.2.csproj.template");
-	if(!System.IO.File.Exists(projectTemplateFilePath.FullPath))
+	if(System.IO.File.Exists(projectTemplateFilePath.FullPath))
 	{
 		return;
 	}
