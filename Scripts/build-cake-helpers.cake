@@ -3,9 +3,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 
-public void CreateBuildCake(DirectoryPath target, RepositorySetting repositorySetting)
+#load ./solution-helpers.cake
+
+public void CreateBuildCake(DirectoryPath target, SolutionSetting setting)
 {
-	var repositoryName = repositorySetting.Name;
 	// build.cake
 	var buildCakeTemplateFilePath = target.GetFilePath("build.cake.template");
 	if(!System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))
@@ -23,8 +24,8 @@ public void CreateBuildCake(DirectoryPath target, RepositorySetting repositorySe
 	Information("Create build.cake File {0}", buildCakeFilePath);
 	var buildCakeString = System.IO.File.ReadAllText(buildCakeTemplateFilePath.FullPath);
 	var buildCakeStringBuilder = new StringBuilder(buildCakeString);
-	buildCakeStringBuilder.Replace("%Solution_Name%", repositoryName);
-	buildCakeStringBuilder.Replace("%Main_Project_Name%", repositoryName);
+	buildCakeStringBuilder.Replace("%Solution_Name%", setting.SolutionName);
+	buildCakeStringBuilder.Replace("%Main_Project_Name%", setting.MainProjectName);
 	System.IO.File.WriteAllText(buildCakeFilePath.FullPath, buildCakeStringBuilder.ToString());
 	
 	if (System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))

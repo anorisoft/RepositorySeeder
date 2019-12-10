@@ -24,67 +24,21 @@ public void Seed_1_0()
 		Information("Target: {0}", target);
 		CopyDirectory​(source, target);
 		
-		CreateRepositorySetting(target);
+		var repositorySetting = CreateRepositorySetting(target, repositoryName);
 		
-		// build.cake
-		var buildCakeTemplateFilePath = target.GetFilePath("build.cake.template");
-		if(!System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))
+		var solutionSetting = new SolutionSetting()
 		{
-			return;
-		}
+			MainProjectName = repositoryName,
+			MainProjectGuid = Guid.NewGuid(),
+			SolutionName = repositoryName
+			SolutionGuid = Guid.NewGuid(),
+			BuildItemsGuid = Guid.NewGuid(),
+			ToolsItemsGuid = Guid.NewGuid()
+		};
 		
-		var buildCakeFilePath = target.GetFilePath("build.cake");
-		if (System.IO.File.Exists(buildCakeFilePath.FullPath))
-		{
-			System.IO.File.Delete(buildCakeFilePath.FullPath);
-		}
+		CreateBuildCake(target, solutionSetting);
 		
-		Information("Create build.cake File {0}", buildCakeFilePath);
-		var buildCakeString = System.IO.File.ReadAllText(buildCakeTemplateFilePath.FullPath);
-		var buildCakeStringBuilder = new StringBuilder(buildCakeString);
-		buildCakeStringBuilder.Replace("%Solution_Name%", repositoryName);
-		buildCakeStringBuilder.Replace("%Main_Project_Name%", repositoryName);
-		System.IO.File.WriteAllText(buildCakeFilePath.FullPath, buildCakeStringBuilder.ToString());
-		
-		if (System.IO.File.Exists(buildCakeTemplateFilePath.FullPath))
-		{
-			Information("Remove build.cake Template File {0}", buildCakeTemplateFilePath.FullPath);
-			//System.IO.File.Delete(buildCakeTemplateFilePath.FullPath);
-		}
-		
-		
-		// Solution
-		var solutionTemplateFilePath = target.Combine("Source").GetFilePath("Solution.template");
-		if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-		{
-			return;
-		}
-		
-		var solutionFilePath = target.Combine("Source").GetFilePath(repositoryName + ".sln");
-		if (System.IO.File.Exists(solutionFilePath.FullPath))
-		{
-			System.IO.File.Delete(solutionFilePath.FullPath);
-		}
-		
-		Information("Create Solution File {0}", solutionFilePath);
-		var solutionString = System.IO.File.ReadAllText(solutionTemplateFilePath.FullPath);
-		var endTag = "EndSolutionTemplate";
-		var solutionStringIndex = solutionString.IndexOf(endTag) + endTag.Length + 2;
-		var solutionStringBuilder = new StringBuilder(solutionString.Substring(solutionStringIndex, solutionString.Length - solutionStringIndex));
-		solutionStringBuilder.Replace("%Solution_Name%", repositoryName);
-		solutionStringBuilder.Replace("%Main_Project_Name%", repositoryName);
-		solutionStringBuilder.Replace("%Main_Project_GUID%", Guid.NewGuid().ToString());
-		solutionStringBuilder.Replace("%Solution_Project_GUID%", Guid.NewGuid().ToString());
-		solutionStringBuilder.Replace("%Build_Items_GUID%", Guid.NewGuid().ToString());
-		solutionStringBuilder.Replace("%Tools_Items_GUID%", Guid.NewGuid().ToString());
-		solutionStringBuilder.Replace("%Solution_GUID%", Guid.NewGuid().ToString());
-		System.IO.File.WriteAllText(solutionFilePath.FullPath, solutionStringBuilder.ToString());
-		
-		if (System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-		{
-			Information("Remove Solution Template File {0}", solutionTemplateFilePath.FullPath);
-			//System.IO.File.Delete(solutionTemplateFilePath.FullPath);
-		}
+		CreateSolution16(target, solutionSetting);
 		
 		// Nuspec
 		var nuspecTemplateFilePath = target.Combine("Source").GetFilePath("Nuspec.template");
