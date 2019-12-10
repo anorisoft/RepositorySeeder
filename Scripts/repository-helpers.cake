@@ -85,6 +85,6 @@ public bool CopyTemplates(DirectoryPath target)
 {
 	var source = new DirectoryPath("Tools/SeedRepository/Template");
 	Information("Source: {0}", source);
-	
 	CopyDirectory​(source, target);
+	return true;
 }
