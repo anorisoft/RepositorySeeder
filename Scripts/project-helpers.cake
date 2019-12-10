@@ -7,21 +7,24 @@ public void CreateProjectFramework472(DirectoryPath target, SolutionSetting sett
 {
 	// Solution
 	var projectTemplateFilePath = target.Combine("Source").GetFilePath("Project.Framework.4.7.2.csproj.template");
-	if(System.IO.File.Exists(projectTemplateFilePath.FullPath))
+	if(!System.IO.File.Exists(projectTemplateFilePath.FullPath))
 	{
+		Information("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);
 		return;
 	}
 	
 	var sourceDirectory = target.Combine("Source");
-	var mainProjectDirectory = target.Combine(setting.MainProjectName);
+	var mainProjectDirectory = sourceDirectory.Combine(setting.MainProjectName);
 	if (!System.IO.Directory.Exists(mainProjectDirectory.FullPath))
 	{
+		Information("Project Directory {0} exists.", mainProjectDirectory.FullPath);
 		System.IO.Directory.CreateDirectory(mainProjectDirectory.FullPath);
 	}
 	
 	var projectFilePath = mainProjectDirectory.GetFilePath(setting.MainProjectName + ".csproj");
 	if (System.IO.File.Exists(projectFilePath.FullPath))
 	{
+		Information("Project File {0} exists.", projectFilePath.FullPath);
 		return;
 	}
 	
