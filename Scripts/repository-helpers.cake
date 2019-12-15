@@ -39,18 +39,107 @@ public string GetMyRepositoryName()
 	return repositoryName;
 }
 
-public RepositorySetting CreateRepositorySetting(DirectoryPath target, string repositoryName)
+public RepositorySetting CreateRepositorySetting(string repositoryName)
 {
 	// .repository
-	var repositorySettingFilePath = target.GetFilePath(".repository");
-	Information("Create repositorySetting file {0}", repositorySettingFilePath);
-	
 	var repositorySetting = new RepositorySetting { Version = "1.0",
 													Created = DateTime.Now, 
 													Name = repositoryName};
+}
+
+pulic void SetSepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
+{
+	var repositorySettingFilePath = target.GetFilePath(".repository");
+	Information("Set repositorySetting file {0}", repositorySettingFilePath);
 	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
 	return repositorySetting;
 }
+
+public void CreateRepository(DirectoryPath target, RepositorySetting setting)
+{
+	CreateRepositoryReadMe(target, setting);
+	
+}
+
+public void CreateRepositoryReadMe(DirectoryPath target, RepositorySetting setting)
+{
+	var readmeTemplateFilePath = target.GetFilePath("README.md.template");
+	if(!System.IO.File.Exists(readmeTemplateFilePath.FullPath))
+	{
+		Information("README Template File {0} not exists.", readmeTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var readmeFilePath = target.GetFilePath("README.md");
+	if (System.IO.File.Exists(readmeFilePath.FullPath))
+	{
+		Information("README File {0} exists.", readmeFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create README File {0}", readmeTemplateFilePath);
+	var readmeString = System.IO.File.ReadAllText(readmeTemplateFilePath.FullPath);
+	var readmeStringBuilder = new StringBuilder(readmeString);
+	readmeStringBuilder.Replace("%RepositoryName%", setting.Name);
+	readmeStringBuilder.Replace("%SolutionName%", setting.Name);
+	readmeStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
+	
+}
+
+public void CreateRepositoryReleases(DirectoryPath target, RepositorySetting setting)
+{
+	var releasesTemplateFilePath = target.GetFilePath("RELEASES.md.template");
+	if(!System.IO.File.Exists(releasesTemplateFilePath.FullPath))
+	{
+		Information("Releases Template File {0} not exists.", releasesTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var releasesFilePath = target.GetFilePath("RELEASES.md");
+	if (System.IO.File.Exists(releasesFilePath.FullPath))
+	{
+		Information("Releases File {0} exists.", releasesFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create Releases File {0}", releasesTemplateFilePath);
+	var releasesString = System.IO.File.ReadAllText(releasesTemplateFilePath.FullPath);
+	var releasesStringBuilder = new StringBuilder(releasesString);
+	releasesStringBuilder.Replace("%RepositoryName%", setting.Name);
+	releasesStringBuilder.Replace("%SolutionName%", setting.Name);
+	releasesStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
+	
+}
+
+
+public void CreateRepositoryLicense(DirectoryPath target, RepositorySetting setting)
+{
+	var licenseTemplateFilePath = target.GetFilePath("LICENSE.md.template");
+	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
+	{
+		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var licenseFilePath = target.GetFilePath("LICENSE.md");
+	if (System.IO.File.Exists(licenseFilePath.FullPath))
+	{
+		Information("License File {0} exists.", licenseFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create License File {0}", licenseTemplateFilePath);
+	var licenseString = System.IO.File.ReadAllText(licenseTemplateFilePath.FullPath);
+	var licenseStringBuilder = new StringBuilder(licenseString);
+	licenseStringBuilder.Replace("%RepositoryName%", setting.Name);
+	licenseStringBuilder.Replace("%SolutionName%", setting.Name);
+	licenseStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
+	
+}
+ 
 
 public bool IsRepositorySettingExists(DirectoryPath target)
 {

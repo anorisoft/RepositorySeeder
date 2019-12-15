@@ -19,9 +19,11 @@ public class ProjectSetting
 	{
 		ProjectName = projectName;
 		ProjectGuid = guid;
+		AssemblyTitle = projectName;
+		PackageId = projectName;
 	}
 	
-	public SolutionSetting(string projectName) : this(projectName, Guid.NewGuid()){}
+	public ProjectSetting(string projectName) : this(projectName, Guid.NewGuid()){}
 	
 	public List<ProjectReference> ProjectReferences {get;} = new List<ProjectReference>();
 	
@@ -50,7 +52,7 @@ public void CreateProject(DirectoryPath target, ProjectSetting setting, string t
 public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, string templatePath = "", string templateFile = "")
 {
 	// Solution
-	string projectTemplateFilePath;
+	FilePath projectTemplateFilePath;
 	if (string.IsNullOrEmpty(templatePath))
 	{
 		if (string.IsNullOrEmpty(templateFile))
@@ -80,15 +82,15 @@ public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, stri
 		return;
 	}
 
-	string projectDirectory;
+	DirectoryPath projectDirectory;
 	
 	if (string.IsNullOrEmpty(setting.ProjectPath))
 	{
-		projectDirectory = target.Combine(setting.ProjectPath);
+		projectDirectory = target.Combine("Source").Combine(setting.ProjectName);
 	}
 	else
 	{
-		projectDirectory = target.Combine("Source").Combine(setting.ProjectName);
+		projectDirectory = target.Combine(setting.ProjectPath).Combine(setting.ProjectName);
 	}
 	
 	if (!System.IO.Directory.Exists(projectDirectory.FullPath))
@@ -124,7 +126,7 @@ public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, stri
 	projectStringBuilder.Replace("%ProjectPath%", setting.ProjectPath);
 	
 	var projectReferenceStringBuilder = new StringBuilder();
-	foreach(var projectReference in ProjectReferences)
+	foreach(var projectReference in setting.ProjectReferences)
 	{
 		projectReferenceStringBuilder.Append(@"    <ProjectReference Include=""");
 		projectReferenceStringBuilder.Append(projectReference.Include);
