@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Infinity Rule Set" Description=" " ToolsVersion="15.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1028" Action="None" />
+    <Rule Id="SA1118" Action="None" />
+    <Rule Id="SA1129" Action="None" />
+    <Rule Id="SA1305" Action="Warning" />
+  </Rules>
+</RuleSet>
