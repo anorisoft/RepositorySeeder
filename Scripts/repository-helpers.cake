@@ -46,8 +46,8 @@ public RepositorySetting CreateRepositorySetting(DirectoryPath target, string re
 	Information("Create repositorySetting file {0}", repositorySettingFilePath);
 	
 	var repositorySetting = new RepositorySetting { Version = "1.0",
-																	Created = DateTime.Now, 
-																	Name = repositoryName};
+													Created = DateTime.Now, 
+													Name = repositoryName};
 	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
 	return repositorySetting;
 }
