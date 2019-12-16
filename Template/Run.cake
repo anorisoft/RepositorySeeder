@@ -1,3 +1,4 @@
 #load ./build.cake
 
-Build.Run();
+//Build.Run();
+Build.RunDotNetCore();
