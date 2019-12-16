@@ -7,7 +7,7 @@
 #addin nuget:?package=Cake.Json
 #addin nuget:?package=Newtonsoft.Json&version=11.0.2
 
-#load ./Tools/GlobalSettings/Addins.cake
+#load ./Tools/GlobalSettings/Seed.cake
 #load ./Tools/SeedRepository/Scripts/seed-repository_1.0.cake
 #load ./Tools/SeedRepository/Scripts/repository-helpers.cake
 

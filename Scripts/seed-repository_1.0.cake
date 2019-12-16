@@ -22,7 +22,11 @@ public void Seed_1_0()
 		
 		CopyTemplates(target);
 		
-		var repositorySetting = CreateRepositorySetting(target, repositoryName);
+		var repositorySetting = CreateRepositorySetting(repositoryName);
+		
+		SetSepositorySetting(target, repositoryName);
+		
+		CreateRepository(target, repositorySetting);
 		
 		var solutionSetting = new SolutionSetting(repositoryName);
 		
@@ -30,7 +34,9 @@ public void Seed_1_0()
 		
 		CreateSolution16(target, solutionSetting);
 		
-		CreateProjectFramework472(target, solutionSetting);
+		var mainProjectSetting = new ProjectSetting(repositoryName, solutionSetting.MainProjectGuid);
+		
+		CreateProject(target, mainProjectSetting);
 		
 		CreateNuspec(target, solutionSetting);
 		
