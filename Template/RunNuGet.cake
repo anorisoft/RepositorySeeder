@@ -1,3 +1,3 @@
 #load ./build.cake
 
-Build.RunNuGet();
+Build.RunDotNetCoreNuGet();
