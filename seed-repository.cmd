@@ -1,4 +1,5 @@
 @echo off
+Setlocal
 rem ***************************************************************************
 rem * Seed script for repository
 rem ***************************************************************************
@@ -14,11 +15,11 @@ IF NOT EXIST "Tools" (
 	powershell write-host -fore Cyan "Directory Tools exist."
 )
 
-SET FILES=
-
 IF EXIST Tools\GlobalSettings (
-	FOR /f "delims=" %%a IN ('dir /b "Tools\GlobalSettings"') DO SET FILES="%%a"
-	IF {%FILES%}=={} (
+	SET TMP=
+	FOR /f "delims=" %%a IN ('dir /b "Tools\GlobalSettings"') DO SET TMP="%%a"
+rem	echo %TMP%
+	IF {%TMP%}=={} (
 		powershell write-host -fore Yellow "Remove empty Global Settings folder."
 		rd Tools\GlobalSettings
 	) 
@@ -30,8 +31,9 @@ IF NOT EXIST Tools\GlobalSettings (
 )
 
 IF EXIST Tools\SeedRepository (
-	FOR /f "delims=" %%a IN ('dir /b "Tools\SeedRepository"') DO SET FILES="%%a"
-	IF {%FILES%}=={} (
+	SET TMP=
+	FOR /f "delims=" %%a IN ('dir /b "Tools\SeedRepository"') DO SET TMP="%%a"
+	IF {%TMP%}=={} (
 		powershell write-host -fore Yellow "Remove empty Repository Template folder."
 		rd Tools\SeedRepository
 	) 
@@ -43,8 +45,9 @@ IF NOT EXIST Tools\SeedRepository (
 )
 
 IF EXIST "Tools\Resources" (
-	FOR /f "delims=" %%a IN ('dir /b "Tools\Resources"') DO SET FILES="%%a"
-	IF {%FILES%}=={} (
+	SET TMP=
+	FOR /f "delims=" %%a IN ('dir /b "Tools\Resources"') DO SET TMP="%%a"
+	IF {%TMP%}=={} (
 		powershell write-host -fore Yellow "Remove empty Resources folder."
 		rd Tools\Resources
 	) 
@@ -75,4 +78,5 @@ rem			powershell .\Tools\Resources\build.ps1 -Script Seed.cake -Verbosity Diagno
 	powershell write-host -fore Red "Directory Tools\Resources not exist."
 )
 pause
+Endlocal
 
