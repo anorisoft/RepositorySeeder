@@ -24,7 +24,7 @@ public void Seed_1_0()
 		
 		var repositorySetting = CreateRepositorySetting(repositoryName);
 		
-		SetSepositorySetting(target, repositoryName);
+		SetSepositorySetting(target, repositorySetting);
 		
 		CreateRepository(target, repositorySetting);
 		

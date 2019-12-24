@@ -45,20 +45,21 @@ public RepositorySetting CreateRepositorySetting(string repositoryName)
 	var repositorySetting = new RepositorySetting { Version = "1.0",
 													Created = DateTime.Now, 
 													Name = repositoryName};
+	return repositorySetting;
 }
 
-pulic void SetSepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
+public void SetSepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
 {
 	var repositorySettingFilePath = target.GetFilePath(".repository");
 	Information("Set repositorySetting file {0}", repositorySettingFilePath);
 	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
-	return repositorySetting;
 }
 
 public void CreateRepository(DirectoryPath target, RepositorySetting setting)
 {
 	CreateRepositoryReadMe(target, setting);
-	
+	CreateRepositoryReleases(target, setting);
+	CreateRepositoryLicense(target, setting);
 }
 
 public void CreateRepositoryReadMe(DirectoryPath target, RepositorySetting setting)
@@ -82,7 +83,7 @@ public void CreateRepositoryReadMe(DirectoryPath target, RepositorySetting setti
 	var readmeStringBuilder = new StringBuilder(readmeString);
 	readmeStringBuilder.Replace("%RepositoryName%", setting.Name);
 	readmeStringBuilder.Replace("%SolutionName%", setting.Name);
-	readmeStringBuilder.Replace("%Created%", setting.Created);
+	readmeStringBuilder.Replace("%Created%", setting.Created.ToString());
 	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
 	
 }
@@ -108,7 +109,7 @@ public void CreateRepositoryReleases(DirectoryPath target, RepositorySetting set
 	var releasesStringBuilder = new StringBuilder(releasesString);
 	releasesStringBuilder.Replace("%RepositoryName%", setting.Name);
 	releasesStringBuilder.Replace("%SolutionName%", setting.Name);
-	releasesStringBuilder.Replace("%Created%", setting.Created);
+	releasesStringBuilder.Replace("%Created%", setting.Created.ToString());
 	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
 	
 }
@@ -116,14 +117,14 @@ public void CreateRepositoryReleases(DirectoryPath target, RepositorySetting set
 
 public void CreateRepositoryLicense(DirectoryPath target, RepositorySetting setting)
 {
-	var licenseTemplateFilePath = target.GetFilePath("LICENSE.md.template");
+	var licenseTemplateFilePath = target.GetFilePath("LICENSE.template");
 	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
 	{
 		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
 		return;
 	}
 	
-	var licenseFilePath = target.GetFilePath("LICENSE.md");
+	var licenseFilePath = target.GetFilePath("LICENSE");
 	if (System.IO.File.Exists(licenseFilePath.FullPath))
 	{
 		Information("License File {0} exists.", licenseFilePath.FullPath);
@@ -135,7 +136,7 @@ public void CreateRepositoryLicense(DirectoryPath target, RepositorySetting sett
 	var licenseStringBuilder = new StringBuilder(licenseString);
 	licenseStringBuilder.Replace("%RepositoryName%", setting.Name);
 	licenseStringBuilder.Replace("%SolutionName%", setting.Name);
-	licenseStringBuilder.Replace("%Created%", setting.Created);
+	licenseStringBuilder.Replace("%Created%", setting.Created.ToString());
 	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
 	
 }
