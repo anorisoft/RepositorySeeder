@@ -26,7 +26,7 @@ public void Seed_1_0()
 	
 	SetRepositorySetting(target, repositorySetting);
 	
-	CreateRepository(target, repositorySetting);
+	CreateRepository(target, repository);
 	
 	var solutionSetting = new SolutionSetting(repository.Name);
 	
@@ -38,11 +38,12 @@ public void Seed_1_0()
 		solutionSetting.MainProjectGuid)
 	{
 		Authors = "Martin Egli",
-		Company = "Anori Soft"
-		PackageLicenseUrl = repository.Url + "/LICENCE",
+		Company = "Anori Soft",
+		PackageLicenseUrl = repository.Url + @"/LICENCE",
 		PackageProjectUrl = repository.Url,
 		RepositoryUrl = repository.Url,
-		ProjectPath = "\source\" + repository.Name
+		ProjectPath = @"source\" + repository.Name,
+		AssemblyOriginatorKeyFile = @"..\public.snk"
 	};
 	
 	CreateProject(target, mainProjectSetting);

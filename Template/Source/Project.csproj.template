@@ -44,6 +44,7 @@
   
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
+	<AdditionalFiles Include="%AssemblyOriginatorKeyFile%" />
   </ItemGroup>
 
   <ItemGroup>

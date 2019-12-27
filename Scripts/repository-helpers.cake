@@ -52,7 +52,7 @@ public Repository GetMyRepository()
 		TemplateType = "",
 		Name = repositoryName,
 		Created = DateTime.Now, 
-		Url = url,
+		Url = remote.Url,
 		Path = path
 	};
 	return repository;

@@ -42,6 +42,7 @@ public class ProjectSetting
 	public string RepositoryUrl {get; set;} = "";
 	public string AssemblyOriginatorKeyFile {get; set;} = "";
 	public string ProjectPath {get; set;} = "";
+	public string TemplatePath {get; set;} = "";
 }
 
 public void CreateProject(DirectoryPath target, ProjectSetting setting, string templatePath = "")
@@ -77,19 +78,15 @@ public DirectoryPath GetProjectDirectory(DirectoryPath target, ProjectSetting se
 public DirectoryPath GetTemplateDirectory(DirectoryPath target, ProjectSetting setting, string templatePath = "")
 {
 	DirectoryPath projectTemplateDirectory;
-	if (!string.IsNullOrEmpty(templatePath))
+	if (!string.IsNullOrEmpty(setting.TemplatePath))
 	{
-		projectTemplateDirectory = target.Combine(templatePath);
+		projectTemplateDirectory = target.Combine(setting.TemplatePath);
 	}
-	else if (string.IsNullOrEmpty(setting.ProjectPath))
+	else 
 	{
 		projectTemplateDirectory = target.Combine("Source");
 	}
-	else
-	{
-		projectTemplateDirectory = target.Combine(setting.ProjectPath);
-	}
-	
+		
 	if (!System.IO.Directory.Exists(projectTemplateDirectory.FullPath))
 	{
 		Information("Project Template Directory {0} exists.", projectTemplateDirectory.FullPath);
@@ -104,7 +101,7 @@ public void CreateProjectFile(DirectoryPath projectDirectory, ProjectSetting set
 	var projectTemplateFilePath = templateDirectory.GetFilePath("Project.csproj.template");
 	if (!System.IO.File.Exists(projectTemplateFilePath.FullPath))
 	{
-		Information("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);
+		Error("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);
 		return;
 	}
 
