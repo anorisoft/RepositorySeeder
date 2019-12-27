@@ -11,37 +11,46 @@
 #load ./build-cake-helpers.cake
 
 public void Seed_1_0()
+{
+	Information("Start Seed 1.0");
+	Information("Target: {0}", BuildParameters.Target);
+	Information("Seed!");
+	
+	var repository = GetMyRepository();
+	var target = BuildParameters.RootDirectoryPath;
+	Information("Target: {0}", target);
+	
+	CopyTemplates(target);
+	
+	var repositorySetting = CreateRepositorySetting(repository);
+	
+	SetRepositorySetting(target, repositorySetting);
+	
+	CreateRepository(target, repositorySetting);
+	
+	var solutionSetting = new SolutionSetting(repository.Name);
+	
+	CreateBuildCake(target, solutionSetting);
+	
+	CreateSolution16(target, solutionSetting);
+	
+	var mainProjectSetting = new ProjectSetting(repository.Name,
+		solutionSetting.MainProjectGuid)
 	{
-		Information("Start Seed 1.0");
-		Information("Target: {0}", BuildParameters.Target);
-		Information("Seed!");
-		
-		var repositoryName = GetMyRepositoryName();
-		var target = BuildParameters.RootDirectoryPath;
-		Information("Target: {0}", target);
-		
-		CopyTemplates(target);
-		
-		var repositorySetting = CreateRepositorySetting(repositoryName);
-		
-		SetSepositorySetting(target, repositorySetting);
-		
-		CreateRepository(target, repositorySetting);
-		
-		var solutionSetting = new SolutionSetting(repositoryName);
-		
-		CreateBuildCake(target, solutionSetting);
-		
-		CreateSolution16(target, solutionSetting);
-		
-		var mainProjectSetting = new ProjectSetting(repositoryName, solutionSetting.MainProjectGuid);
-		
-		CreateProject(target, mainProjectSetting);
-		
-		CreateNuspec(target, solutionSetting);
-		
-		Information("Comit Repository Seeding");
+		Authors = "Martin Egli",
+		Company = "Anori Soft"
+		PackageLicenseUrl = repository.Url + "/LICENCE",
+		PackageProjectUrl = repository.Url,
+		RepositoryUrl = repository.Url,
+		ProjectPath = "\source\" + repository.Name
+	};
+	
+	CreateProject(target, mainProjectSetting);
+	
+	CreateNuspec(target, solutionSetting);
+	
+	Information("Comit Repository Seeding");
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
-		
-	}
+	
+}
 

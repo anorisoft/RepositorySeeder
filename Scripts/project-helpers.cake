@@ -43,6 +43,7 @@ public class ProjectSetting
 	public string AssemblyOriginatorKeyFile {get; set;} = "";
 	public string ProjectPath {get; set;} = "";
 }
+
 public void CreateProject(DirectoryPath target, ProjectSetting setting, string templatePath = "")
 {
 	DirectoryPath projectDirectory = GetProjectDirectory(target, setting);
