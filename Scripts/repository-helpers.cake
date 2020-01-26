@@ -207,9 +207,9 @@ public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templateP
 	Information("Create README File {0}", readmeTemplateFilePath);
 	var readmeString = System.IO.File.ReadAllText(readmeTemplateFilePath.FullPath);
 	var readmeStringBuilder = new StringBuilder(readmeString);
-	readmeStringBuilder.Replace("%RepositoryName%", setting.Name);
-	readmeStringBuilder.Replace("%SolutionName%", setting.Name);
-	readmeStringBuilder.Replace("%Created%", setting.Created);
+	readmeStringBuilder.Replace("%RepositoryName%", repository.Name);
+	readmeStringBuilder.Replace("%SolutionName%", repository.Name);
+	readmeStringBuilder.Replace("%Created%", repository.Created.ToString());
 	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
 	
 }
@@ -239,9 +239,9 @@ public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath tem
 	Information("Create Releases File {0}", releasesTemplateFilePath);
 	var releasesString = System.IO.File.ReadAllText(releasesTemplateFilePath.FullPath);
 	var releasesStringBuilder = new StringBuilder(releasesString);
-	releasesStringBuilder.Replace("%RepositoryName%", setting.Name);
-	releasesStringBuilder.Replace("%SolutionName%", setting.Name);
-	releasesStringBuilder.Replace("%Created%", setting.Created);
+	releasesStringBuilder.Replace("%RepositoryName%", repository.Name);
+	releasesStringBuilder.Replace("%SolutionName%", repository.Name);
+	releasesStringBuilder.Replace("%Created%", repository.Created.ToString());
 	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
 	
 }
@@ -261,7 +261,7 @@ public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath temp
 		return;
 	}
 	
-	var licenseFilePath = target.GetFilePath("LICENSE.md");
+	var licenseFilePath = target.GetFilePath("LICENSE");
 	if (System.IO.File.Exists(licenseFilePath.FullPath))
 	{
 		Information("License File {0} exists.", licenseFilePath.FullPath);
@@ -271,9 +271,9 @@ public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath temp
 	Information("Create License File {0}", licenseTemplateFilePath);
 	var licenseString = System.IO.File.ReadAllText(licenseTemplateFilePath.FullPath);
 	var licenseStringBuilder = new StringBuilder(licenseString);
-	licenseStringBuilder.Replace("%RepositoryName%", setting.Name);
-	licenseStringBuilder.Replace("%SolutionName%", setting.Name);
-	licenseStringBuilder.Replace("%Created%", setting.Created);
+	licenseStringBuilder.Replace("%RepositoryName%", repository.Name);
+	licenseStringBuilder.Replace("%SolutionName%", repository.Name);
+	licenseStringBuilder.Replace("%Created%", repository.Created.ToString());
 	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
 }
  

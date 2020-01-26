@@ -42,46 +42,19 @@ public class ProjectSetting
 	public string RepositoryUrl {get; set;} = "";
 	public string AssemblyOriginatorKeyFile {get; set;} = "";
 	public string ProjectPath {get; set;} = "";
-}
-public void CreateProject(DirectoryPath target, ProjectSetting setting, string templatePath = "", string templateFile = "")
-{
-	CreateProjectFile(target, setting, templatePath);
-	
+	public string TemplatePath {get; set;} = "";
 }
 
-public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, string templatePath = "", string templateFile = "")
+public void CreateProject(DirectoryPath target, ProjectSetting setting, string templatePath = "")
 {
-	// Solution
-	FilePath projectTemplateFilePath;
-	if (string.IsNullOrEmpty(templatePath))
-	{
-		if (string.IsNullOrEmpty(templateFile))
-		{
-			projectTemplateFilePath = target.Combine("Source").GetFilePath("Project.csproj.template");
-		}
-		else
-		{
-			projectTemplateFilePath = target.Combine("Source").GetFilePath(templateFile);
-		}
-	}
-	else
-	{
-		if (string.IsNullOrEmpty(templateFile))
-		{
-			projectTemplateFilePath = target.Combine(templatePath).GetFilePath("Project.csproj.template");
-		}
-		else
-		{
-			projectTemplateFilePath = target.Combine(templatePath).GetFilePath(templateFile);
-		}
-	}
-	
-	if (!System.IO.File.Exists(projectTemplateFilePath.FullPath))
-	{
-		Information("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);
-		return;
-	}
+	DirectoryPath projectDirectory = GetProjectDirectory(target, setting);
+	DirectoryPath templateDirectory = GetTemplateDirectory(target, setting, templatePath);
+	CreateProjectFile(projectDirectory, setting, templateDirectory);
+	CreateRepositoryStyleCopJson(projectDirectory, setting, templateDirectory);
+}
 
+public DirectoryPath GetProjectDirectory(DirectoryPath target, ProjectSetting setting)
+{
 	DirectoryPath projectDirectory;
 	
 	if (string.IsNullOrEmpty(setting.ProjectPath))
@@ -90,7 +63,7 @@ public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, stri
 	}
 	else
 	{
-		projectDirectory = target.Combine(setting.ProjectPath).Combine(setting.ProjectName);
+		projectDirectory = target.Combine(setting.ProjectPath);
 	}
 	
 	if (!System.IO.Directory.Exists(projectDirectory.FullPath))
@@ -99,6 +72,39 @@ public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, stri
 		System.IO.Directory.CreateDirectory(projectDirectory.FullPath);
 	}
 	
+	return projectDirectory;
+}
+
+public DirectoryPath GetTemplateDirectory(DirectoryPath target, ProjectSetting setting, string templatePath = "")
+{
+	DirectoryPath projectTemplateDirectory;
+	if (!string.IsNullOrEmpty(setting.TemplatePath))
+	{
+		projectTemplateDirectory = target.Combine(setting.TemplatePath);
+	}
+	else 
+	{
+		projectTemplateDirectory = target.Combine("Source");
+	}
+		
+	if (!System.IO.Directory.Exists(projectTemplateDirectory.FullPath))
+	{
+		Information("Project Template Directory {0} exists.", projectTemplateDirectory.FullPath);
+		System.IO.Directory.CreateDirectory(projectTemplateDirectory.FullPath);
+	}
+	
+	return projectTemplateDirectory;
+}
+
+public void CreateProjectFile(DirectoryPath projectDirectory, ProjectSetting setting, DirectoryPath templateDirectory)
+{
+	var projectTemplateFilePath = templateDirectory.GetFilePath("Project.csproj.template");
+	if (!System.IO.File.Exists(projectTemplateFilePath.FullPath))
+	{
+		Error("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);
+		return;
+	}
+
 	var projectFilePath = projectDirectory.GetFilePath(setting.ProjectName + ".csproj");
 	if (System.IO.File.Exists(projectFilePath.FullPath))
 	{
@@ -145,6 +151,28 @@ public void CreateProjectFile(DirectoryPath target, ProjectSetting setting, stri
 	}
 }
 
+public void CreateRepositoryStyleCopJson(DirectoryPath projectDirectory, ProjectSetting setting, DirectoryPath templateDirectory)
+{
+	var stylecopTemplateFilePath = templateDirectory.GetFilePath("stylecop.json.template");
+	
+	if(!System.IO.File.Exists(stylecopTemplateFilePath.FullPath))
+	{
+		Information("stylecop.json Template File {0} not exists.", stylecopTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var stylecopFilePath = projectDirectory.GetFilePath("stylecop.json");
+	if (System.IO.File.Exists(stylecopFilePath.FullPath))
+	{
+		Information("stylecop.json File {0} exists.", stylecopFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create stylecop.json File {0}", stylecopTemplateFilePath);
+	var stylecopString = System.IO.File.ReadAllText(stylecopTemplateFilePath.FullPath);
+	System.IO.File.WriteAllText(stylecopFilePath.FullPath, stylecopString.ToString());
+	
+}
 
 
 public void CreateProjectFramework472(DirectoryPath target, SolutionSetting setting)

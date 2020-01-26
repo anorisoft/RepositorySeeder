@@ -29,7 +29,7 @@ public class SolutionSetting
 	public Guid ToolsItemsGuid {get; set;}
 }
 
-public void CreateSolutionFiles(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
+public void CreateSolutionFiles(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting, ProjectSetting mainProjectSetting)
 {
 		CreateSolution16File(target, templatePath, setting); 
 

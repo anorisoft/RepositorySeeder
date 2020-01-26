@@ -14,9 +14,17 @@ IF NOT EXIST "Tools" (
 	powershell write-host -fore Cyan "Directory Tools exist."
 )
 
-IF NOT EXIST Tools\RepositorySeeder (
+IF EXIST Tools\SeedRepository (
+	SET TMP=
+	FOR /f "delims=" %%a IN ('dir /b "Tools\SeedRepository"') DO SET TMP="%%a"
+	IF {%TMP%}=={} (
+		powershell write-host -fore Yellow "Remove empty Repository Template folder."
+		rd Tools\SeedRepository
+	) 
+)
+IF NOT EXIST Tools\SeedRepository (
 	powershell write-host -fore Yellow "Adding Repository Seeder Submodule from git."
-	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/RepositorySeeder
+	git submodule add -f https://github.com/anorisoft/RepositorySeeder.git Tools/SeedRepository
 	powershell write-host
 	goto :UPDATENO
 ) ELSE (
@@ -28,14 +36,14 @@ IF NOT EXIST Tools\RepositorySeeder (
 
 :UPDATEYES
 	powershell write-host -fore Yellow "Updating Repository Seeder Submodule from git."
-	git submodule update -f --init Tools/RepositorySeeder
+	git submodule update -f --init Tools/SeedRepository
 :UPDATENO
 
 
-IF EXIST "Tools\RepositorySeeder" (
-  COPY Tools\RepositorySeeder\seed-repository*.cmd
+IF EXIST "Tools\SeedRepository" (
+  COPY Tools\SeedRepository\seed-repository*.cmd
 ) ELSE (
-  powershell write-host -fore Red "Directory Tools\RepositorySeeder not exist."
+  powershell write-host -fore Red "Directory Tools\SeedRepository not exist."
 )
 
 :DELETCHOICE

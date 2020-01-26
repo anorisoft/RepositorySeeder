@@ -11,6 +11,31 @@
 #load ./build-cake-helpers.cake
 
 public void Seed_1_0()
+{
+	Information("Start Seed 1.0");
+	Information("Target: {0}", BuildParameters.Target);
+	Information("Seed!");
+	
+	var repository = GetMyRepository();
+	var target = BuildParameters.RootDirectoryPath;
+	Information("Target: {0}", target);
+	
+	CopyTemplates(target);
+	
+	var repositorySetting = CreateRepositorySetting(repository);
+	
+	SetRepositorySetting(target, repositorySetting);
+	
+	CreateRepository(target, repository);
+	
+	var solutionSetting = new SolutionSetting(repository.Name);
+	
+	CreateBuildCake(target, solutionSetting);
+	
+	CreateSolution16(target, solutionSetting);
+	
+	var mainProjectSetting = new ProjectSetting(repository.Name,
+		solutionSetting.MainProjectGuid)
 	{
 		Information("Start Seed 1.0");
 		Information("Target: {0}", BuildParameters.Target);
@@ -47,6 +72,6 @@ public void Seed_1_0()
 				
 		Information("Comit Repository Seeding");
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
-		
-	}
+	
+}
 
