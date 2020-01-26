@@ -24,6 +24,10 @@ public class Repository{
 	public string Name {get; set;}
 	public string Url {get; set;}
 	public string Path {get; set;}
+	public string SourceFolder {get; set;} = "Source"
+	public string DocumentationFolder {get; set;} = "Documentation"
+	public string TestFolder {get; set;} = "Tests"
+	public string ToolsFolder {get; set;} = "Tools"
 }
 
 /// <summary>
@@ -32,9 +36,9 @@ public class Repository{
 /// <returns>
 /// The repository name.
 /// </returns>
-public string GetMyRepositoryName()
+public Repository GetMyRepository()
 {
-	Debug("Begin GetMyRepositoryName")
+	Debug("Begin GetMyRepository")
 	try
 	{
 		if (BuildParameters == null)
@@ -80,31 +84,22 @@ public string GetMyRepositoryName()
 			repositoryName = path.Substring(startIndex, length);
 		}
 		Information("Repository Name: {0}", repositoryName);
-		return repositoryName;
+		
+		var repository = new Repository()
+		{
+			TemplateVersion = "1.0",
+			TemplateType = "",
+			Name = repositoryName,
+			Created = DateTime.Now, 
+			Url = remote.Url,
+			Path = path
+		};
+		return repository;
 	}
 	finaly
 	{
 		Debug("End GetMyRepositoryName");
 	}
-}
-
-/// <summary>
-///     Set Repository Setting.
-/// </summary>
-/// <param name="target">Target path.</param>
-/// <param name="setting">Repository setting.</param>
-pulic void SetRepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
-	Information("Repository Name: {0}", repositoryName);
-	var repository = new Repository()
-	{
-		TemplateVersion = "1.0",
-		TemplateType = "",
-		Name = repositoryName,
-		Created = DateTime.Now, 
-		Url = remote.Url,
-		Path = path
-	};
-	return repository;
 }
 
 /// <summary>
@@ -123,7 +118,7 @@ public RepositorySetting CreateRepositorySetting(Repository repository)
 	return repositorySetting;
 }
 
-public void SetRepositorySettingFile(DirectoryPath target, RepositorySetting repositorySetting)
+public void SaveRepositorySettingFile(DirectoryPath target, RepositorySetting repositorySetting)
 {
 	var repositorySettingFilePath = target.GetFilePath(".repository");
 	Information("Set repositorySetting file {0}", repositorySettingFilePath);
@@ -172,40 +167,14 @@ public bool CopyTemplates(DirectoryPath target)
 /// </summary>
 /// <param name="target">Target path.</param>
 /// <param name="templatePath">Template path.</param>
-/// <param name="setting">Repository setting.</param>
-public void CreateRepositoryFiles(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+/// <param name="repository">Repository setting.</param>
+public void CreateRepositoryFiles(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	CreateRepositoryReadMe(target, templatePath, setting);
-	CreateRepositoryReleasesFile(target, templatePath, setting);
-	CreateRepositoryLicenseFile(target, templatePath, setting);
+	CreateRepositoryReadMe(target, templatePath, repository);
+	CreateRepositoryReleasesFile(target, templatePath, repository);
+	CreateRepositoryLicenseFile(target, templatePath, repository);
 
-	CreateRepositoryDirectories(target, templatePath, setting);
-}
-
-public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
-{
-	CreateDirectory("Source", target);
-}
-
-public void CreateDirectory(string directoryName, DirectoryPath target)
-{
-	var sourcePath = target.GetDirectoryPath(directoryName);
-	if (Directory.Exists(sourcePath)) 
-	{
-		Debug("{0} Directory already exists {1}", directoryName, sourcePath.FullPath);
-	}
-	else
-	{
-		Directory.CreateDirectory(sourcePath.FullPath);
-		if (Directory.Exists(sourcePath)) 
-		{
-			Debug("{0} Directory created {1}", directoryName, sourcePath.FullPath);
-		}
-		else
-		{
-			throw new Exception("Can't create {0} directory {1}", directoryName, sourcePath.FullPath);
-		}
-	}
+	CreateRepositoryDirectories(target, templatePath, repository);
 }
 
 // <summary>
@@ -213,31 +182,29 @@ public void CreateDirectory(string directoryName, DirectoryPath target)
 /// </summary>
 /// <param name="target">Target path.</param>
 /// <param name="templatePath">Template path.</param>
-/// <param name="setting">Repository setting.</param>
-public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+/// <param name="repository">Repository setting.</param>
+public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	var readmeTemplateFilePath = templatePath.GetFilePath("README.md.template");
-	if(!System.IO.File.Exists(readmeTemplateFilePath.FullPath))
-	{
-		Information("README Template File {0} not exists.", readmeTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var readmeFilePath = target.GetFilePath("README.md");
-	if (System.IO.File.Exists(readmeFilePath.FullPath))
-	{
-		Information("README File {0} exists.", readmeFilePath.FullPath);
-		return;
-	}
-	
+	CreateDirectory(repository.SourceFolder, target);
+	CreateDirectory(repository.DocumentationFolder, target);
+	CreateDirectory(repository.TestFolder, target);
+	CreateDirectory(repository.ToolsFolder, target);
+}
+
+// <summary>
+///     Create repository ReadMe file.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="templatePath">Template path.</param>
+/// <param name="repository">Repository setting.</param>
+public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templatePath, Repository repository)
+{
 	Information("Create README File {0}", readmeTemplateFilePath);
-	var readmeString = System.IO.File.ReadAllText(readmeTemplateFilePath.FullPath);
-	var readmeStringBuilder = new StringBuilder(readmeString);
-	readmeStringBuilder.Replace("%RepositoryName%", repository.Name);
-	readmeStringBuilder.Replace("%SolutionName%", repository.Name);
-	readmeStringBuilder.Replace("%Created%", repository.Created.ToString());
-	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
-	
+	var replaces = new Dictionary<string, string>();
+	replaces.Add("%RepositoryName%", repository.Name);
+	replaces.Add("%SolutionName%", repository.Name);
+	replaces.Add("%Created%", repository.Created.ToString());
+	CreateFileFromTemplate("README.md", "README.md.template", replaces, target, templatePath)
 }
 
 // <summary>
@@ -245,31 +212,15 @@ public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templateP
 /// </summary>
 /// <param name="target">Target path.</param>
 /// <param name="templatePath">Template path.</param>
-/// <param name="setting">Repository setting.</param>
-public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+/// <param name="repository">Repository setting.</param>
+public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	var releasesTemplateFilePath = templatePath.GetFilePath("RELEASES.md.template");
-	if(!System.IO.File.Exists(releasesTemplateFilePath.FullPath))
-	{
-		Information("Releases Template File {0} not exists.", releasesTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var releasesFilePath = target.GetFilePath("RELEASES.md");
-	if (System.IO.File.Exists(releasesFilePath.FullPath))
-	{
-		Information("Releases File {0} exists.", releasesFilePath.FullPath);
-		return;
-	}
-	
 	Information("Create Releases File {0}", releasesTemplateFilePath);
-	var releasesString = System.IO.File.ReadAllText(releasesTemplateFilePath.FullPath);
-	var releasesStringBuilder = new StringBuilder(releasesString);
-	releasesStringBuilder.Replace("%RepositoryName%", repository.Name);
-	releasesStringBuilder.Replace("%SolutionName%", repository.Name);
-	releasesStringBuilder.Replace("%Created%", repository.Created.ToString());
-	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
-	
+	var replaces = new Dictionary<string, string>();
+	replaces.Add("%RepositoryName%", repository.Name);
+	replaces.Add("%SolutionName%", repository.Name);
+	replaces.Add("%Created%", repository.Created.ToString());
+	CreateFileFromTemplate("RELEASES.md", "RELEASES.md.template", replaces, target, templatePath)
 }
 
 // <summary>
@@ -277,29 +228,14 @@ public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath tem
 /// </summary>
 /// <param name="target">Target path.</param>
 /// <param name="templatePath">Template path.</param>
-/// <param name="setting">Repository setting.</param>
-public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+/// <param name="repository">Repository setting.</param>
+public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	var licenseTemplateFilePath = templatePath.GetFilePath("LICENSE.template");
-	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
-	{
-		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var licenseFilePath = target.GetFilePath("LICENSE");
-	if (System.IO.File.Exists(licenseFilePath.FullPath))
-	{
-		Information("License File {0} exists.", licenseFilePath.FullPath);
-		return;
-	}
-	
 	Information("Create License File {0}", licenseTemplateFilePath);
-	var licenseString = System.IO.File.ReadAllText(licenseTemplateFilePath.FullPath);
-	var licenseStringBuilder = new StringBuilder(licenseString);
-	licenseStringBuilder.Replace("%RepositoryName%", repository.Name);
-	licenseStringBuilder.Replace("%SolutionName%", repository.Name);
-	licenseStringBuilder.Replace("%Created%", repository.Created.ToString());
-	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
+	var replaces = new Dictionary<string, string>();
+	replaces.Add("%RepositoryName%", repository.Name);
+	replaces.Add("%SolutionName%", repository.Name);
+	replaces.Add("%Created%", repository.Created.ToString());
+	CreateFileFromTemplate("LICENSE", "LICENSE.template", replaces, target, templatePath)
 }
  

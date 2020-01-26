@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 // Description: The file makes it possible to centrally control the cake process of all repositories.
-#load ./template-helpers.cake
+
 #load ./repository-helpers.cake
 #load ./nuspec-helpers.cake
 #load ./solution-helpers.cake
@@ -12,13 +12,13 @@
 
 public void Seed_1_0()
 {
-		Information("Start Seed 1.0");
+			Information("Start Seed 1.0");
 		Information("Target: {0}", BuildParameters.Target);
 		Information("Seed!");
 		Debug(DateTime.Now);
 		
-		Debug("Get Repository");
-		var repository = GetMyRepository();
+		Debug("Get Repository Name");
+		var repositoryName = GetMyRepositoryName();
 		Debug("Repository Name: {0}", repositoryName);
 
 		Debug("Get Target Path");
@@ -31,15 +31,17 @@ public void Seed_1_0()
 		// CopyTemplates(target);
 		
 		Debug("Create Repository Setting");
-		var repositorySetting = CreateRepositorySetting(repository);
+		var repositorySetting = CreateRepositorySetting(repositoryName);
 		
 		Debug("Set Repository Setting");
-		SaveRepositorySetting(target, repositoryName);
+		SetRepositorySetting(target, repositoryName);
 		
 		Debug("Create Repository Files");
-		CreateRepositoryFiles(target, templatePath, repository);
+		CreateRepositoryFiles(target, templatePath, repositorySetting);
 		
-		var mainProject = new VisualStudioProject(repository.Name,
+		var solutionSetting = new SolutionSetting(repositoryName);
+
+		var mainProjectSetting = new ProjectSetting(repository.Name,
 				solutionSetting.MainProjectGuid)
 			{
 				Authors = "Martin Egli",
@@ -47,14 +49,14 @@ public void Seed_1_0()
 				PackageLicenseUrl = repository.Url + @"/LICENCE",
 				PackageProjectUrl = repository.Url,
 				RepositoryUrl = repository.Url,
-				ProjectPath = repository.SourceFolder + @"\" + repository.Name,
+				ProjectPath = @"source\" + repository.Name,
 				AssemblyOriginatorKeyFile = @"..\public.snk"
 			};
-			
-		var solution = new VisualStudioSolution(mainProject, solutionName: repositoryName);
+
 		
-		CreateCakeBuildFiles(target, templatePath, solution);
-		CreateSolution16Files(target, templatePath, solution);
+		CreateBuildFiles(target, templatePath, solutionSetting);
+		
+		CreateSolutionFiles(target, templatePath, solutionSetting, mainProjectSetting);
 				
 		Information("Comit Repository Seeding");
 	

@@ -5,7 +5,7 @@
 
 #load ./solution-helpers.cake
 
-public void CreateNuspec(DirectoryPath target, SolutionSetting setting)
+public void CreateNuspec(DirectoryPath target, VisualStudioSolution setting)
 {
 	// Nuspec
 	var nuspecTemplateFilePath = target.Combine("Source").GetFilePath("Nuspec.template");

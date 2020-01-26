@@ -3,25 +3,41 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 
-public class SolutionSetting
+public class VisualStudioSolution
 {
-	public SolutionSetting(string mainProjectName, string solutionName)
+	public VisualStudioSolution(VisualStudioProject mainProject, VisualStudioProject unitTestProject = null, string solutionName = null, string solutionType = "Default")
 	{
-		MainProjectName = mainProjectName;
-		MainProjectGuid = Guid.NewGuid();
-		UnitTestProjectName = mainProjectName+".UnitTest";
-		UnitTestProjectGuid = Guid.NewGuid();
-		SolutionName = solutionName;
+		MainProject = mainProject;
+		MainProjectName = mainProject.ProjectName;
+		MainProjectGuid = mainProject.ProjectGuid;
+
+		if (unitTestProject != null)
+		{
+			UnitTestProjec = unitTestProject;
+			UnitTestProjectName = unitTestProject.ProjectName;
+			UnitTestProjectGuid = unitTestProject.ProjectGuid;
+		}
+
+		if (solutionName == null)
+		{
+			SolutionName = mainProject.ProjectName;
+		}
+		else
+		{
+			SolutionName = solutionName;
+		}
+		
 		SolutionGuid = Guid.NewGuid();
 		BuildItemsGuid = Guid.NewGuid();
 		ToolsItemsGuid = Guid.NewGuid();
 	}
 	
-	public SolutionSetting(string mainProjectName) : this(mainProjectName, mainProjectName){}
-	
+	public VisualStudioProject MainProject {get; set;} = null;
+	public VisualStudioProject UnitTestProjec {get; set;} = null;
 	public string MainProjectName {get; set;}
 	public string UnitTestProjectName {get; set;}
 	public string SolutionName {get; set;}
+	public string SolutionType {get; set;}
 	public Guid MainProjectGuid {get; set;}
 	public Guid UnitTestProjectGuid {get; set;}
 	public Guid SolutionGuid {get; set;}
@@ -29,121 +45,77 @@ public class SolutionSetting
 	public Guid ToolsItemsGuid {get; set;}
 }
 
-public void CreateSolutionFiles(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting, ProjectSetting mainProjectSetting)
+public void CreateVisualStudioSolution16Files(
+	DirectoryPath target, 
+	DirectoryPath templatePath, 
+	VisualStudioSolution solution)
 {
-		CreateSolution16File(target, templatePath, setting); 
+	var solutionDirectoryPath = target.Combine(solution.SourceFolder);
+	var solutionTemplateDirectoryPath = templatePath.Combine("VisualStudio");
+		
+	if (unitTestProject == null)
+	{
+		CreateSolution16File(solutionDirectoryPath, solutionTemplateDirectoryPath, solution); 
+	}
+	else
+	{
+		var testsPath = target.Combine(solution.TestsFolder);
+		CreateSolutionUnitTest16File(solutionDirectoryPath, solutionTemplateDirectoryPath, solution);
+		CreateProject(testsPath, solutionTemplateDirectoryPath, solution.UnitTestProject);
+	}
 
-		var mainProjectSetting = new ProjectSetting(repositoryName, solutionSetting.MainProjectGuid);
-		CreateProject(target, templatePath, mainProjectSetting);
-		CreateNuspec(target, templatePath, solutionSetting);
+	CreateProject(solutionDirectoryPath, solutionTemplateDirectoryPath, solution.MainProject);
+	CreateNuspec(solutionDirectoryPath, solutionTemplateDirectoryPath, solution);
+
+	CreateSolutionFile("README.md", "Solution.README.md.template", solutionDirectoryPath, solutionTemplateDirectoryPath, solution);
+
+	CopyFileFromTemplate("stylecop.json", "stylecop.json.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+	CopyFileFromTemplate("CodeMaid.config", "CodeMaid.config.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+	CopyFileFromTemplate("public.snk", "public.snk.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+	CopyFileFromTemplate(solution.SolutionName + ".v3.ncrunchsolution", "Solution.16.v3.ncrunchsolution.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+	CopyFileFromTemplate(solution.SolutionName + ".ruleset", "Solution.16.ruleset.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+	CopyFileFromTemplate(solution.SolutionName + ".DotSettings", "Solution.16.DotSettings.template", solutionDirectoryPath, solutionTemplateDirectoryPath);
+}
+
+public void CreateSolution16File(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
+{
+	Information("Create Solution 16");
+	CreateSolutionFile("Solution.16.template", target, templatePath, solution);
+}
+
+public void CreateSolutionUnitTest16File(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
+{
+	Information("Create Solution 16 with Unitest");
+	CreateSolutionFile("Solution.16.UnitTest.template", target, templatePath, solution);
+}
+
+public void CreateSolution15File(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
+{
+	Information("Create Solution 15");
+	CreateSolutionFile("Solution.15.template", target, templatePath, solution);
+}
+
+public void CreateSolutionFile(string solutionTemplateFile, DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
+{
+	CreateSolutionFile(solution.SolutionName + ".sln", solutionTemplateFile, target, templatePath, solution);
 }
 
 
-public void CreateSolution16File(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
+public void CreateSolutionFile(string targetFile, string templateFile, DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
 {
-	// Solution
-	var solutionTemplateFilePath = templatePath.Combine("Source").GetFilePath("Solution.16.template");
-	if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
+	Information("Create {0}", targetFile);
+	var replaces = new Dictionary<string,string>();
+	replaces.Add("%Solution_Name%", solution.SolutionName);
+	replaces.Add("%Solution_GUID%", solution.SolutionGuid.ToString());
+	replaces.Add("%Main_Project_Name%", solution.MainProjectName);
+	replaces.Add("%Main_Project_GUID%", solution.MainProjectGuid.ToString());
+	if (solution.UnitTestProject != null)
 	{
-		return;
+		replaces.Add("%UnitTest_Project_Name%", solution.UnitTestProjectName);
+		replaces.Add("%UnitTest_Project_GUID%", solution.UnitTestProjectGuid.ToString());
 	}
-	
-	var solutionFilePath = target.Combine("Source").GetFilePath(setting.SolutionName + ".sln");
-	if (System.IO.File.Exists(solutionFilePath.FullPath))
-	{
-		System.IO.File.Delete(solutionFilePath.FullPath);
-	}
-	
-	Information("Create Solution File {0}", solutionFilePath);
-	var solutionString = System.IO.File.ReadAllText(solutionTemplateFilePath.FullPath);
-	var endTag = "EndSolutionTemplate";
-	var solutionStringIndex = solutionString.IndexOf(endTag) + endTag.Length + 2;
-	var solutionStringBuilder = new StringBuilder(solutionString.Substring(solutionStringIndex, solutionString.Length - solutionStringIndex));
-	solutionStringBuilder.Replace("%Solution_Name%", setting.SolutionName);
-	solutionStringBuilder.Replace("%Solution_GUID%", setting.SolutionGuid.ToString());
-	solutionStringBuilder.Replace("%Main_Project_Name%", setting.MainProjectName);
-	solutionStringBuilder.Replace("%Main_Project_GUID%", setting.MainProjectGuid.ToString());
-//	solutionStringBuilder.Replace("%Solution_Project_GUID%", Guid.NewGuid().ToString());
-	solutionStringBuilder.Replace("%Build_Items_GUID%", setting.BuildItemsGuid.ToString());
-	solutionStringBuilder.Replace("%Tools_Items_GUID%", setting.ToolsItemsGuid.ToString());
-	System.IO.File.WriteAllText(solutionFilePath.FullPath, solutionStringBuilder.ToString());
-	
-	if (System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-	{
-		Information("Remove Solution Template File {0}", solutionTemplateFilePath.FullPath);
-		//System.IO.File.Delete(solutionTemplateFilePath.FullPath);
-	}
+	replaces.Add("%Build_Items_GUID%", solution.BuildItemsGuid.ToString());
+	replaces.Add("%Tools_Items_GUID%", solution.ToolsItemsGuid.ToString());
+	CreateFileFromTemplate(targetFile, templateFile, replaces, target, templatePath);
 }
 
-public void CreateSolutionUnitTest16(DirectoryPath target, SolutionSetting setting)
-{
-	// Solution
-	var solutionTemplateFilePath = target.Combine("Source").GetFilePath("Solution.16.UnitTest.template");
-	if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-	{
-		return;
-	}
-	
-	var solutionFilePath = target.Combine("Source").GetFilePath(setting.SolutionName + ".sln");
-	if (System.IO.File.Exists(solutionFilePath.FullPath))
-	{
-		System.IO.File.Delete(solutionFilePath.FullPath);
-	}
-	
-	Information("Create Solution File {0}", solutionFilePath);
-	var solutionString = System.IO.File.ReadAllText(solutionTemplateFilePath.FullPath);
-	var endTag = "EndSolutionTemplate";
-	var solutionStringIndex = solutionString.IndexOf(endTag) + endTag.Length + 2;
-	var solutionStringBuilder = new StringBuilder(solutionString.Substring(solutionStringIndex, solutionString.Length - solutionStringIndex));
-	solutionStringBuilder.Replace("%Solution_Name%", setting.SolutionName);
-	solutionStringBuilder.Replace("%Solution_GUID%", setting.SolutionGuid.ToString());
-	solutionStringBuilder.Replace("%Main_Project_Name%", setting.MainProjectName);
-	solutionStringBuilder.Replace("%Main_Project_GUID%", setting.MainProjectGuid.ToString());
-	solutionStringBuilder.Replace("%UnitTest_Project_Name%", setting.UnitTestProjectName);
-	solutionStringBuilder.Replace("%UnitTest_Project_GUID%", setting.UnitTestProjectGuid.ToString());
-	solutionStringBuilder.Replace("%Build_Items_GUID%", setting.BuildItemsGuid.ToString());
-	solutionStringBuilder.Replace("%Tools_Items_GUID%", setting.ToolsItemsGuid.ToString());
-	System.IO.File.WriteAllText(solutionFilePath.FullPath, solutionStringBuilder.ToString());
-	
-	if (System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-	{
-		Information("Remove Solution Template File {0}", solutionTemplateFilePath.FullPath);
-		//System.IO.File.Delete(solutionTemplateFilePath.FullPath);
-	}
-}
-
-public void CreateSolution15(DirectoryPath target, SolutionSetting setting)
-{
-	// Solution
-	var solutionTemplateFilePath = target.Combine("Source").GetFilePath("Solution.15.template");
-	if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-	{
-		return;
-	}
-	
-	var solutionFilePath = target.Combine("Source").GetFilePath(setting.SolutionName + ".sln");
-	if (System.IO.File.Exists(solutionFilePath.FullPath))
-	{
-		System.IO.File.Delete(solutionFilePath.FullPath);
-	}
-	
-	Information("Create Solution File {0}", solutionFilePath);
-	var solutionString = System.IO.File.ReadAllText(solutionTemplateFilePath.FullPath);
-	var endTag = "EndSolutionTemplate";
-	var solutionStringIndex = solutionString.IndexOf(endTag) + endTag.Length + 2;
-	var solutionStringBuilder = new StringBuilder(solutionString.Substring(solutionStringIndex, solutionString.Length - solutionStringIndex));
-	solutionStringBuilder.Replace("%Solution_Name%", setting.SolutionName);
-	solutionStringBuilder.Replace("%Solution_GUID%", setting.SolutionGuid.ToString());
-	solutionStringBuilder.Replace("%Main_Project_Name%", setting.MainProjectName);
-	solutionStringBuilder.Replace("%Main_Project_GUID%", setting.MainProjectGuid.ToString());
-//	solutionStringBuilder.Replace("%Solution_Project_GUID%", Guid.NewGuid().ToString());
-	solutionStringBuilder.Replace("%Build_Items_GUID%", setting.BuildItemsGuid.ToString());
-	solutionStringBuilder.Replace("%Tools_Items_GUID%", setting.ToolsItemsGuid.ToString());
-	System.IO.File.WriteAllText(solutionFilePath.FullPath, solutionStringBuilder.ToString());
-	
-	if (System.IO.File.Exists(solutionTemplateFilePath.FullPath))
-	{
-		Information("Remove Solution Template File {0}", solutionTemplateFilePath.FullPath);
-		//System.IO.File.Delete(solutionTemplateFilePath.FullPath);
-	}
-}

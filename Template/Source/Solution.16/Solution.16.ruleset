@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Regeln für Project.Framework.4.7.2" Description="Codeanalyseregeln für Project.Framework.4.7.2.csproj." ToolsVersion="16.0">
+  <IncludeAll Action="Warning" />
+</RuleSet>

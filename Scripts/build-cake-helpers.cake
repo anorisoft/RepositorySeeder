@@ -6,54 +6,34 @@
 #load ./template-helpers.cake
 #load ./solution-helpers.cake
 
-public void CreateBuildFiles(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
+public void CreateCakeBuildFiles(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
 {
-	CreateBuildCakeFile(target, templatePath, setting);
-	CopyFileFromTemplate(".appveyor.yml", target, templatePath, setting);
-	CopyFileFromTemplate(".gitattributes", target, templatePath, setting);
-	CopyFileFromTemplate(".gitignore", target, templatePath, setting);
-	CopyFileFromTemplate("GitVersion.yml", target, templatePath, setting);	
-	CopyFileFromTemplate("Run.cake", target, templatePath, setting);
-	CopyFileFromTemplate("Run.cmd", target, templatePath, setting);
-	CopyFileFromTemplate("RunAppVeyor.cmd", target, templatePath, setting);
-	CopyFileFromTemplate("RunNuGet.cake", target, templatePath, setting);
-	CopyFileFromTemplate("RunNuGet.cmd", target, templatePath, setting);
+	CreateBuildCakeFile(target, templatePath, solution);
+	CopyFileFromTemplate(".appveyor.yml", target, templatePath);
+	CopyFileFromTemplate(".gitattributes", target, templatePath);
+	CopyFileFromTemplate(".gitignore", target, templatePath);
+	CopyFileFromTemplate("GitVersion.yml", target, templatePath);	
+	CopyFileFromTemplate("Run.cake", target, templatePath);
+	CopyFileFromTemplate("Run.cmd", target, templatePath);
+	CopyFileFromTemplate("RunAppVeyor.cmd", target, templatePath);
+	CopyFileFromTemplate("RunNuGet.cake", target, templatePath);
+	CopyFileFromTemplate("RunNuGet.cmd", target, templatePath);
 }
 
-public void CreateBuildCakeFile(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
+public void CreateBuildCakeFile(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
 {
-	var templateFilePath = templatePath.GetFilePath(fileName);
-	if(!System.IO.File.Exists(templateFilePath.FullPath))
+	Information("Create BuildCake {0}", solution.SolutionName);
+	var replaces = new Dictionary<string,string>();
+	replaces.Add("%Solution_Name%", solution.SolutionName);
+	replaces.Add("%Solution_GUID%", solution.SolutionGuid.ToString());
+	replaces.Add("%Main_Project_Name%", solution.MainProjectName);
+	replaces.Add("%Main_Project_GUID%", solution.MainProjectGuid.ToString());
+	if (solution.UnitTestProject != null)
 	{
-		Debug("No template file {0}", templateFilePath.FullPath);
-		throw new Exception(No template file {0}, filePath.FullPath);
+		replaces.Add("%UnitTest_Project_Name%", solution.UnitTestProjectName);
+		replaces.Add("%UnitTest_Project_GUID%", solution.UnitTestProjectGuid.ToString());
 	}
-	
-	var filePath = target.GetFilePath(fileName);
-	if (System.IO.File.Exists(filePath.FullPath))
-	{
-		Information("Remove file {0}", filePath.FullPath);
-		System.IO.File.Delete(filePath.FullPath);
-		if (System.IO.File.Exists(filePath.FullPath))
-		{
-			Debug("Can't remove file {0}", filePath.FullPath);
-			throw new Exception("Can't remove file {0}", filePath.FullPath);
-		}
-	}
-	
-	Debug("Read All Text to file {0}", templateFilePath.FullPath);
-	var buildCakeString = System.IO.File.ReadAllText(templateFilePath.FullPath);
-	
-	var stringBuilder = new StringBuilder(buildCakeString);
-	stringBuilder.Replace("%Solution_Name%", setting.SolutionName);
-	stringBuilder.Replace("%Main_Project_Name%", setting.MainProjectName);
-	
-	Debug("Write All Text to file {0}", filePath.FullPath);
-	System.IO.File.WriteAllText(filePath.FullPath, stringBuilder.ToString());
-	if (!System.IO.File.Exists(filePath.FullPath))
-	{
-		Debug("Can't write file {0}", filePath.FullPath);
-		throw new Exception("Can't write file {0}", filePath.FullPath);
-	}
-	Information("Add file: {0}", filePath.FullPath);
+	replaces.Add("%Build_Items_GUID%", solution.BuildItemsGuid.ToString());
+	replaces.Add("%Tools_Items_GUID%", solution.ToolsItemsGuid.ToString());
+	CreateFileFromTemplate("build.cake", "build.cake.template", replaces, target, templatePath);
 }

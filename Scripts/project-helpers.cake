@@ -5,7 +5,7 @@
 public class ProjectReference
 {
 
-	public ProjectReference(string include)
+	public VisualStudioProjectReference(string include)
 	{
 		this.Include = include;
 	}
@@ -13,9 +13,9 @@ public class ProjectReference
 }
 
 
-public class ProjectSetting
+public class VisualStudioProject
 {
-	public ProjectSetting(string projectName, Guid guid)
+	public VisualStudioProject(string projectName, Guid guid)
 	{
 		ProjectName = projectName;
 		ProjectGuid = guid;
@@ -23,9 +23,9 @@ public class ProjectSetting
 		PackageId = projectName;
 	}
 	
-	public ProjectSetting(string projectName) : this(projectName, Guid.NewGuid()){}
+	public VisualStudioProject(string projectName) : this(projectName, Guid.NewGuid()){}
 	
-	public List<ProjectReference> ProjectReferences {get;} = new List<ProjectReference>();
+	public List<VisualStudioProjectReference> ProjectReferences {get;} = new List<VisualStudioProjectReference>();
 	
 	public string ProjectName {get; set;} = "";
 	public Guid ProjectGuid {get; set;}
@@ -45,25 +45,25 @@ public class ProjectSetting
 	public string TemplatePath {get; set;} = "";
 }
 
-public void CreateProject(DirectoryPath target, ProjectSetting setting, string templatePath = "")
+public void CreateProject(DirectoryPath target, VisualStudioProject project, string templatePath = "")
 {
-	DirectoryPath projectDirectory = GetProjectDirectory(target, setting);
-	DirectoryPath templateDirectory = GetTemplateDirectory(target, setting, templatePath);
-	CreateProjectFile(projectDirectory, setting, templateDirectory);
-	CreateRepositoryStyleCopJson(projectDirectory, setting, templateDirectory);
+	DirectoryPath projectDirectory = GetProjectDirectory(target, project);
+	DirectoryPath templateDirectory = GetTemplateDirectory(target, project, templatePath);
+	CreateProjectFile(projectDirectory, project, templateDirectory);
+	CreateRepositoryStyleCopJson(projectDirectory, project, templateDirectory);
 }
 
-public DirectoryPath GetProjectDirectory(DirectoryPath target, ProjectSetting setting)
+public DirectoryPath GetProjectDirectory(DirectoryPath target, VisualStudioProject project)
 {
 	DirectoryPath projectDirectory;
 	
-	if (string.IsNullOrEmpty(setting.ProjectPath))
+	if (string.IsNullOrEmpty(project.ProjectPath))
 	{
-		projectDirectory = target.Combine("Source").Combine(setting.ProjectName);
+		projectDirectory = target.Combine("Source").Combine(project.ProjectName);
 	}
 	else
 	{
-		projectDirectory = target.Combine(setting.ProjectPath);
+		projectDirectory = target.Combine(project.ProjectPath);
 	}
 	
 	if (!System.IO.Directory.Exists(projectDirectory.FullPath))
@@ -75,16 +75,16 @@ public DirectoryPath GetProjectDirectory(DirectoryPath target, ProjectSetting se
 	return projectDirectory;
 }
 
-public DirectoryPath GetTemplateDirectory(DirectoryPath target, ProjectSetting setting, string templatePath = "")
+public DirectoryPath GetTemplateDirectory(DirectoryPath target, VisualStudioProject project, string templatePath = "")
 {
 	DirectoryPath projectTemplateDirectory;
-	if (!string.IsNullOrEmpty(setting.TemplatePath))
+	if (!string.IsNullOrEmpty(project.TemplatePath))
 	{
-		projectTemplateDirectory = target.Combine(setting.TemplatePath);
+		projectTemplateDirectory = target.Combine(project.TemplatePath);
 	}
 	else 
 	{
-		projectTemplateDirectory = target.Combine("Source");
+		projectTemplateDirectory = target.Combine("@Tools/SeedRepository/Template/Source");
 	}
 		
 	if (!System.IO.Directory.Exists(projectTemplateDirectory.FullPath))
