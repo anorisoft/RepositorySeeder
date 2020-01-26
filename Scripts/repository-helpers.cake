@@ -1,145 +1,110 @@
-///////////////////////////////////////////////////////////////////////////////
+// -----------------------------------------------------------------------
+// <copyright file="repository-helpers.cake" company="Anorisoft">
+// Copyright (c) Anorisoft. All rights reserved.
+// </copyright>
 // Repository Helpers
-///////////////////////////////////////////////////////////////////////////////
+// The script contains the functions for creating and managing the repository.
 // Author: Martin Egli
+// -----------------------------------------------------------------------
 
+/// <summary>
+///     The Repository Setting Class
+/// </summary>
 public class RepositorySetting{
 	public string Version {get; set;}
 	public DateTime Created {get; set;}
 	public string Name {get; set;}
 }
 
-
+/// <summary>
+///     Get the git repository name of the current folder.
+/// </summary>
+/// <returns>
+/// The repository name.
+/// </returns>
 public string GetMyRepositoryName()
 {
-	var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
-	var remote = branch.Remotes.Where((r) => r.Name.ToLower() == "origin").FirstOrDefault();
-	if(remote == null)
+	Debug("Begin GetMyRepositoryName")
+	try
 	{
-		remote = branch.Remotes.FirstOrDefault();
+		if (BuildParameters == null)
+		{
+			thwow new Exception("BuildParameters is null.");
+		}
+		
+		if (BuildParameters.RootDirectoryPath == null)	
+		{
+			thwow new Exception("RootDirectoryPath is null.");
+		}
+		//ToDo Check Path
+		Debug("Git Branch Current from {0}", BuildParameters.RootDirectoryPath)
+		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
+		if (branch == null)
+		{
+			thwow new Exception("No branch found.");
+		}
+
+		var remote = branch.Remotes.Where((r) => r.Name.ToLower() == "origin").FirstOrDefault();
+		if(remote == null)
+		{
+			remote = branch.Remotes.FirstOrDefault();
+		}
+		Information("Remote Name: {0}", remote.Name);
+		Information("Remote Url: {0}", remote.Url);
+		
+		var url = new System.Uri(remote.Url);
+		Debug("Remote Url: {0}", remote.Url)
+		var path = url.AbsolutePath;
+		Debug("URL.AbsolutePath: {0}", url.AbsolutePath)
+		var startIndex = path.LastIndexOf(@"/") + 1;
+		var repositoryName = "";
+		var index = path.LastIndexOf(@".git");
+		if (index > startIndex)
+		{
+			var length = index - startIndex;
+			repositoryName = path.Substring(startIndex, length);
+		}
+		else
+		{
+			var length = path.Length - startIndex;
+			repositoryName = path.Substring(startIndex, length);
+		}
+		Information("Repository Name: {0}", repositoryName);
+		return repositoryName;
 	}
-	Information("Remote Name: {0}", remote.Name);
-	Information("Remote Url: {0}", remote.Url);
-	var url = new System.Uri(remote.Url);
-	var path = url.AbsolutePath;
-	var startIndex = path.LastIndexOf(@"/") + 1;
-	var repositoryName = "";
-	var index = path.LastIndexOf(@".git");
-	if (index > startIndex)
+	finaly
 	{
-		var length = index - startIndex;
-		repositoryName = path.Substring(startIndex, length);
+		Debug("End GetMyRepositoryName");
 	}
-	else
-	{
-		var length = path.Length - startIndex;
-		repositoryName = path.Substring(startIndex, length);
-	}
-	Information("Repository Name: {0}", repositoryName);
-	return repositoryName;
 }
 
-public RepositorySetting CreateRepositorySetting(string repositoryName)
+
+/// <summary>
+///     Create new RepositorySetting.
+/// </summary>
+/// <returns>
+/// The RepositorySetting.
+/// </returns>
+public RepositorySetting CreateRepositorySetting(string repositoryName, string version = "1.0")
 {
-	// .repository
-	var repositorySetting = new RepositorySetting { Version = "1.0",
+	var repositorySetting = new RepositorySetting { Version = version,
 													Created = DateTime.Now, 
 													Name = repositoryName};
 }
 
-pulic void SetSepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
+/// <summary>
+///     Set Repository Setting.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="setting">Repository setting.</param>
+pulic void SetRepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
 {
 	var repositorySettingFilePath = target.GetFilePath(".repository");
 	Information("Set repositorySetting file {0}", repositorySettingFilePath);
 	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
-	return repositorySetting;
-}
-
-public void CreateRepository(DirectoryPath target, RepositorySetting setting)
-{
-	CreateRepositoryReadMe(target, setting);
-	
-}
-
-public void CreateRepositoryReadMe(DirectoryPath target, RepositorySetting setting)
-{
-	var readmeTemplateFilePath = target.GetFilePath("README.md.template");
-	if(!System.IO.File.Exists(readmeTemplateFilePath.FullPath))
-	{
-		Information("README Template File {0} not exists.", readmeTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var readmeFilePath = target.GetFilePath("README.md");
-	if (System.IO.File.Exists(readmeFilePath.FullPath))
-	{
-		Information("README File {0} exists.", readmeFilePath.FullPath);
-		return;
-	}
-	
-	Information("Create README File {0}", readmeTemplateFilePath);
-	var readmeString = System.IO.File.ReadAllText(readmeTemplateFilePath.FullPath);
-	var readmeStringBuilder = new StringBuilder(readmeString);
-	readmeStringBuilder.Replace("%RepositoryName%", setting.Name);
-	readmeStringBuilder.Replace("%SolutionName%", setting.Name);
-	readmeStringBuilder.Replace("%Created%", setting.Created);
-	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
-	
-}
-
-public void CreateRepositoryReleases(DirectoryPath target, RepositorySetting setting)
-{
-	var releasesTemplateFilePath = target.GetFilePath("RELEASES.md.template");
-	if(!System.IO.File.Exists(releasesTemplateFilePath.FullPath))
-	{
-		Information("Releases Template File {0} not exists.", releasesTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var releasesFilePath = target.GetFilePath("RELEASES.md");
-	if (System.IO.File.Exists(releasesFilePath.FullPath))
-	{
-		Information("Releases File {0} exists.", releasesFilePath.FullPath);
-		return;
-	}
-	
-	Information("Create Releases File {0}", releasesTemplateFilePath);
-	var releasesString = System.IO.File.ReadAllText(releasesTemplateFilePath.FullPath);
-	var releasesStringBuilder = new StringBuilder(releasesString);
-	releasesStringBuilder.Replace("%RepositoryName%", setting.Name);
-	releasesStringBuilder.Replace("%SolutionName%", setting.Name);
-	releasesStringBuilder.Replace("%Created%", setting.Created);
-	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
-	
 }
 
 
-public void CreateRepositoryLicense(DirectoryPath target, RepositorySetting setting)
-{
-	var licenseTemplateFilePath = target.GetFilePath("LICENSE.md.template");
-	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
-	{
-		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
-		return;
-	}
-	
-	var licenseFilePath = target.GetFilePath("LICENSE.md");
-	if (System.IO.File.Exists(licenseFilePath.FullPath))
-	{
-		Information("License File {0} exists.", licenseFilePath.FullPath);
-		return;
-	}
-	
-	Information("Create License File {0}", licenseTemplateFilePath);
-	var licenseString = System.IO.File.ReadAllText(licenseTemplateFilePath.FullPath);
-	var licenseStringBuilder = new StringBuilder(licenseString);
-	licenseStringBuilder.Replace("%RepositoryName%", setting.Name);
-	licenseStringBuilder.Replace("%SolutionName%", setting.Name);
-	licenseStringBuilder.Replace("%Created%", setting.Created);
-	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
-	
-}
- 
 
 public bool IsRepositorySettingExists(DirectoryPath target)
 {
@@ -177,3 +142,138 @@ public bool CopyTemplates(DirectoryPath target)
 	CopyDirectory​(source, target);
 	return true;
 }
+
+// <summary>
+///     Create RepositoryFiles.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="templatePath">Template path.</param>
+/// <param name="setting">Repository setting.</param>
+public void CreateRepositoryFiles(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+{
+	CreateRepositoryReadMe(target, templatePath, setting);
+	CreateRepositoryReleasesFile(target, templatePath, setting);
+	CreateRepositoryLicenseFile(target, templatePath, setting);
+}
+
+public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+{
+	CreateDirectory("Source", target);
+}
+
+public void CreateDirectory(string directoryName, DirectoryPath target)
+{
+	var sourcePath = target.GetDirectoryPath(directoryName);
+	if (Directory.Exists(sourcePath)) 
+	{
+		Debug("{0} Directory already exists {1}", directoryName, sourcePath.FullPath);
+	}
+	else
+	{
+		Directory.CreateDirectory(sourcePath.FullPath);
+		if (Directory.Exists(sourcePath)) 
+		{
+			Debug("{0} Directory created {1}", directoryName, sourcePath.FullPath);
+		}
+		else
+		{
+			throw new Exception("Can't create {0} directory {1}", directoryName, sourcePath.FullPath);
+		}
+	}
+}
+
+// <summary>
+///     Create repository ReadMe file.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="templatePath">Template path.</param>
+/// <param name="setting">Repository setting.</param>
+public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+{
+	var readmeTemplateFilePath = templatePath.GetFilePath("README.md.template");
+	if(!System.IO.File.Exists(readmeTemplateFilePath.FullPath))
+	{
+		Information("README Template File {0} not exists.", readmeTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var readmeFilePath = target.GetFilePath("README.md");
+	if (System.IO.File.Exists(readmeFilePath.FullPath))
+	{
+		Information("README File {0} exists.", readmeFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create README File {0}", readmeTemplateFilePath);
+	var readmeString = System.IO.File.ReadAllText(readmeTemplateFilePath.FullPath);
+	var readmeStringBuilder = new StringBuilder(readmeString);
+	readmeStringBuilder.Replace("%RepositoryName%", setting.Name);
+	readmeStringBuilder.Replace("%SolutionName%", setting.Name);
+	readmeStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(readmeFilePath.FullPath, readmeStringBuilder.ToString());
+	
+}
+
+// <summary>
+///     Create repository RELEASES file.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="templatePath">Template path.</param>
+/// <param name="setting">Repository setting.</param>
+public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+{
+	var releasesTemplateFilePath = templatePath.GetFilePath("RELEASES.md.template");
+	if(!System.IO.File.Exists(releasesTemplateFilePath.FullPath))
+	{
+		Information("Releases Template File {0} not exists.", releasesTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var releasesFilePath = target.GetFilePath("RELEASES.md");
+	if (System.IO.File.Exists(releasesFilePath.FullPath))
+	{
+		Information("Releases File {0} exists.", releasesFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create Releases File {0}", releasesTemplateFilePath);
+	var releasesString = System.IO.File.ReadAllText(releasesTemplateFilePath.FullPath);
+	var releasesStringBuilder = new StringBuilder(releasesString);
+	releasesStringBuilder.Replace("%RepositoryName%", setting.Name);
+	releasesStringBuilder.Replace("%SolutionName%", setting.Name);
+	releasesStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(releasesFilePath.FullPath, releasesStringBuilder.ToString());
+	
+}
+
+// <summary>
+///     Create repository LICENSE file.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="templatePath">Template path.</param>
+/// <param name="setting">Repository setting.</param>
+public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
+{
+	var licenseTemplateFilePath = templatePath.GetFilePath("LICENSE.md.template");
+	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
+	{
+		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
+		return;
+	}
+	
+	var licenseFilePath = target.GetFilePath("LICENSE.md");
+	if (System.IO.File.Exists(licenseFilePath.FullPath))
+	{
+		Information("License File {0} exists.", licenseFilePath.FullPath);
+		return;
+	}
+	
+	Information("Create License File {0}", licenseTemplateFilePath);
+	var licenseString = System.IO.File.ReadAllText(licenseTemplateFilePath.FullPath);
+	var licenseStringBuilder = new StringBuilder(licenseString);
+	licenseStringBuilder.Replace("%RepositoryName%", setting.Name);
+	licenseStringBuilder.Replace("%SolutionName%", setting.Name);
+	licenseStringBuilder.Replace("%Created%", setting.Created);
+	System.IO.File.WriteAllText(licenseFilePath.FullPath, licenseStringBuilder.ToString());
+}
+ 

@@ -15,31 +15,36 @@ public void Seed_1_0()
 		Information("Start Seed 1.0");
 		Information("Target: {0}", BuildParameters.Target);
 		Information("Seed!");
+		Debug(DateTime.Now);
 		
+		Debug("Get Repository Name");
 		var repositoryName = GetMyRepositoryName();
+		Debug("Repository Name: {0}", repositoryName);
+
+		Debug("Get Target Path");
 		var target = BuildParameters.RootDirectoryPath;
 		Information("Target: {0}", target);
 		
-		CopyTemplates(target);
+		var templatePath = new DirectoryPath(@"Tools/SeedRepository/Template");
+	    Information("Template: {0}", templatePath);
+				
+		// CopyTemplates(target);
 		
+		Debug("Create Repository Setting");
 		var repositorySetting = CreateRepositorySetting(repositoryName);
 		
-		SetSepositorySetting(target, repositoryName);
+		Debug("Set Repository Setting");
+		SetRepositorySetting(target, repositoryName);
 		
-		CreateRepository(target, repositorySetting);
+		Debug("Create Repository Files");
+		CreateRepositoryFiles(target, templatePath, repositorySetting);
 		
 		var solutionSetting = new SolutionSetting(repositoryName);
 		
-		CreateBuildCake(target, solutionSetting);
+		CreateBuildFiles(target, templatePath, solutionSetting);
 		
-		CreateSolution16(target, solutionSetting);
-		
-		var mainProjectSetting = new ProjectSetting(repositoryName, solutionSetting.MainProjectGuid);
-		
-		CreateProject(target, mainProjectSetting);
-		
-		CreateNuspec(target, solutionSetting);
-		
+		CreateSolutionFiles(target, templatePath, solutionSetting);
+				
 		Information("Comit Repository Seeding");
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
 		

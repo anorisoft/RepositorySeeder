@@ -29,10 +29,20 @@ public class SolutionSetting
 	public Guid ToolsItemsGuid {get; set;}
 }
 
-public void CreateSolution16(DirectoryPath target, SolutionSetting setting)
+public void CreateSolutionFiles(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
+{
+		CreateSolution16File(target, templatePath, setting); 
+
+		var mainProjectSetting = new ProjectSetting(repositoryName, solutionSetting.MainProjectGuid);
+		CreateProject(target, templatePath, mainProjectSetting);
+		CreateNuspec(target, templatePath, solutionSetting);
+}
+
+
+public void CreateSolution16File(DirectoryPath target, DirectoryPath templatePath, SolutionSetting setting)
 {
 	// Solution
-	var solutionTemplateFilePath = target.Combine("Source").GetFilePath("Solution.16.template");
+	var solutionTemplateFilePath = templatePath.Combine("Source").GetFilePath("Solution.16.template");
 	if(!System.IO.File.Exists(solutionTemplateFilePath.FullPath))
 	{
 		return;
