@@ -24,10 +24,10 @@ public class Repository{
 	public string Name {get; set;}
 	public string Url {get; set;}
 	public string Path {get; set;}
-	public string SourceFolder {get; set;} = "Source"
-	public string DocumentationFolder {get; set;} = "Documentation"
-	public string TestFolder {get; set;} = "Tests"
-	public string ToolsFolder {get; set;} = "Tools"
+	public string SourceFolder {get; set;} = "Source";
+	public string DocumentationFolder {get; set;} = "Documentation";
+	public string TestFolder {get; set;} = "Tests";
+	public string ToolsFolder {get; set;} = "Tools";
 }
 
 /// <summary>
@@ -38,24 +38,24 @@ public class Repository{
 /// </returns>
 public Repository GetMyRepository()
 {
-	Debug("Begin GetMyRepository")
+	Debug("Begin GetMyRepository");
 	try
 	{
 		if (BuildParameters == null)
 		{
-			thwow new Exception("BuildParameters is null.");
+			throw new Exception("BuildParameters is null.");
 		}
 		
 		if (BuildParameters.RootDirectoryPath == null)	
 		{
-			thwow new Exception("RootDirectoryPath is null.");
+			throw new Exception("RootDirectoryPath is null.");
 		}
 		//ToDo Check Path
-		Debug("Git Branch Current from {0}", BuildParameters.RootDirectoryPath)
+		Debug("Git Branch Current from {0}", BuildParameters.RootDirectoryPath);
 		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
 		if (branch == null)
 		{
-			thwow new Exception("No branch found.");
+			throw new Exception("No branch found.");
 		}
 
 		var remote = branch.Remotes.Where((r) => r.Name.ToLower() == "origin").FirstOrDefault();
@@ -67,9 +67,9 @@ public Repository GetMyRepository()
 		Information("Remote Url: {0}", remote.Url);
 		
 		var url = new System.Uri(remote.Url);
-		Debug("Remote Url: {0}", remote.Url)
+		Debug("Remote Url: {0}", remote.Url);
 		var path = url.AbsolutePath;
-		Debug("URL.AbsolutePath: {0}", url.AbsolutePath)
+		Debug("URL.AbsolutePath: {0}", url.AbsolutePath);
 		var startIndex = path.LastIndexOf(@"/") + 1;
 		var repositoryName = "";
 		var index = path.LastIndexOf(@".git");
@@ -96,7 +96,7 @@ public Repository GetMyRepository()
 		};
 		return repository;
 	}
-	finaly
+	finally
 	{
 		Debug("End GetMyRepositoryName");
 	}
@@ -204,7 +204,7 @@ public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templateP
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);
 	replaces.Add("%Created%", repository.Created.ToString());
-	CreateFileFromTemplate("README.md", "README.md.template", replaces, target, templatePath)
+	CreateFileFromTemplate("README.md", "README.md.template", replaces, target, templatePath);
 }
 
 // <summary>
@@ -220,7 +220,7 @@ public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath tem
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);
 	replaces.Add("%Created%", repository.Created.ToString());
-	CreateFileFromTemplate("RELEASES.md", "RELEASES.md.template", replaces, target, templatePath)
+	CreateFileFromTemplate("RELEASES.md", "RELEASES.md.template", replaces, target, templatePath);
 }
 
 // <summary>
@@ -236,6 +236,6 @@ public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath temp
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);
 	replaces.Add("%Created%", repository.Created.ToString());
-	CreateFileFromTemplate("LICENSE", "LICENSE.template", replaces, target, templatePath)
+	CreateFileFromTemplate("LICENSE", "LICENSE.template", replaces, target, templatePath);
 }
  

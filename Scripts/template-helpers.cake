@@ -3,18 +3,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
 
-public void CopyFileFromTemplate(string fileName, DirectoryPath target, DirectoryPath templatePath){
+public void CopyFileFromTemplate(string fileName, DirectoryPath target, DirectoryPath templatePath)
 {
 	CopyFileFromTemplate(fileName, fileName, target, templatePath);
 }
 
-public void CopyFileFromTemplate(string fileName, string templateFileName, DirectoryPath target, DirectoryPath templatePath){
+public void CopyFileFromTemplate(string fileName, string templateFileName, DirectoryPath target, DirectoryPath templatePath)
 {
 	var templateFilePath = templatePath.GetFilePath(fileName);
 	if(!System.IO.File.Exists(templateFilePath.FullPath))
 	{
 		Debug("No template file {0}", templateFilePath.FullPath);
-		throw new Exception(No template file {0}, filePath.FullPath);
+		throw new Exception("No template file {0}", filePath.FullPath);
 	}
 	
 	var filePath = target.GetFilePath(fileName);
@@ -69,13 +69,13 @@ public void CreateDirectory(string directoryName, DirectoryPath target)
 /// <param name="replaceDictionary">Replace Dictionary.</param>
 /// <param name="target">Target path.</param>
 /// <param name="templatePath">Template path.</param>
-public void CreateFileFromTemplate(string fileName, string templateFileName, IDictionary<string,strein> replaceDictionary, DirectoryPath target, DirectoryPath templatePath)
+public void CreateFileFromTemplate(string fileName, string templateFileName, IDictionary<string,string> replaceDictionary, DirectoryPath target, DirectoryPath templatePath)
 {
 	var templateFilePath = templatePath.GetFilePath(templateName);
 	if(!System.IO.File.Exists(templateFilePath.FullPath))
 	{
 		Debug("No template file {0}", templateFilePath.FullPath);
-		throw new Exception(No template file {0}, filePath.FullPath);
+		throw new Exception("No template file {0}", filePath.FullPath);
 	}
 	
 	var filePath = target.GetFilePath(fileName);

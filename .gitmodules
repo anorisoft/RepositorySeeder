@@ -1,3 +1,9 @@
 [submodule "Tools/GlobalSettings"]
 	path = Tools/GlobalSettings
 	url = https://github.com/anorisoft/Cake.GlobalSettings.git
+[submodule "Tools/SeedRepository"]
+	path = Tools/SeedRepository
+	url = https://github.com/anorisoft/RepositorySeed.git
+[submodule "Tools/Resources"]
+	path = Tools/Resources
+	url = https://github.com/anorisoft/Cake.Resources.git

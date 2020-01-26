@@ -2,9 +2,8 @@
 // Project Helpers
 ///////////////////////////////////////////////////////////////////////////////
 // Author: Martin Egli
-public class ProjectReference
+public class VisualStudioProjectReference
 {
-
 	public VisualStudioProjectReference(string include)
 	{
 		this.Include = include;
@@ -96,7 +95,7 @@ public DirectoryPath GetTemplateDirectory(DirectoryPath target, VisualStudioProj
 	return projectTemplateDirectory;
 }
 
-public void CreateProjectFile(DirectoryPath projectDirectory, ProjectSetting setting, DirectoryPath templateDirectory)
+public void CreateProjectFile(DirectoryPath projectDirectory, VisualStudioProject setting, DirectoryPath templateDirectory)
 {
 	var projectTemplateFilePath = templateDirectory.GetFilePath("Project.csproj.template");
 	if (!System.IO.File.Exists(projectTemplateFilePath.FullPath))
@@ -151,7 +150,7 @@ public void CreateProjectFile(DirectoryPath projectDirectory, ProjectSetting set
 	}
 }
 
-public void CreateRepositoryStyleCopJson(DirectoryPath projectDirectory, ProjectSetting setting, DirectoryPath templateDirectory)
+public void CreateRepositoryStyleCopJson(DirectoryPath projectDirectory, VisualStudioProject setting, DirectoryPath templateDirectory)
 {
 	var stylecopTemplateFilePath = templateDirectory.GetFilePath("stylecop.json.template");
 	
@@ -175,7 +174,7 @@ public void CreateRepositoryStyleCopJson(DirectoryPath projectDirectory, Project
 }
 
 
-public void CreateProjectFramework472(DirectoryPath target, SolutionSetting setting)
+public void CreateProjectFramework472(DirectoryPath target, VisualStudioSolution setting)
 {
 	// Solution
 	var projectTemplateFilePath = target.Combine("Source").GetFilePath("Project.Framework.4.7.2.csproj.template");
