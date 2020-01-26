@@ -12,32 +12,7 @@
 
 public void Seed_1_0()
 {
-	Information("Start Seed 1.0");
-	Information("Target: {0}", BuildParameters.Target);
-	Information("Seed!");
-	
-	var repository = GetMyRepository();
-	var target = BuildParameters.RootDirectoryPath;
-	Information("Target: {0}", target);
-	
-	CopyTemplates(target);
-	
-	var repositorySetting = CreateRepositorySetting(repository);
-	
-	SetRepositorySetting(target, repositorySetting);
-	
-	CreateRepository(target, repository);
-	
-	var solutionSetting = new SolutionSetting(repository.Name);
-	
-	CreateBuildCake(target, solutionSetting);
-	
-	CreateSolution16(target, solutionSetting);
-	
-	var mainProjectSetting = new ProjectSetting(repository.Name,
-		solutionSetting.MainProjectGuid)
-	{
-		Information("Start Seed 1.0");
+			Information("Start Seed 1.0");
 		Information("Target: {0}", BuildParameters.Target);
 		Information("Seed!");
 		Debug(DateTime.Now);
@@ -65,12 +40,27 @@ public void Seed_1_0()
 		CreateRepositoryFiles(target, templatePath, repositorySetting);
 		
 		var solutionSetting = new SolutionSetting(repositoryName);
+
+		var mainProjectSetting = new ProjectSetting(repository.Name,
+				solutionSetting.MainProjectGuid)
+			{
+				Authors = "Martin Egli",
+				Company = "Anori Soft",
+				PackageLicenseUrl = repository.Url + @"/LICENCE",
+				PackageProjectUrl = repository.Url,
+				RepositoryUrl = repository.Url,
+				ProjectPath = @"source\" + repository.Name,
+				AssemblyOriginatorKeyFile = @"..\public.snk"
+			};
+
 		
 		CreateBuildFiles(target, templatePath, solutionSetting);
 		
-		CreateSolutionFiles(target, templatePath, solutionSetting);
+		CreateSolutionFiles(target, templatePath, solutionSetting, mainProjectSetting);
 				
 		Information("Comit Repository Seeding");
+	
+	
 //			GitCommit(target, "Seeder", "seeder@anorisoft.com", "Seeding by script");
 	
 }

@@ -14,6 +14,16 @@ public class RepositorySetting{
 	public string Version {get; set;}
 	public DateTime Created {get; set;}
 	public string Name {get; set;}
+	public string Type {get; set;}
+}
+
+public class Repository{
+	public string TemplateVersion {get; set;}
+	public string TemplateType {get; set;}
+	public DateTime Created {get; set;}
+	public string Name {get; set;}
+	public string Url {get; set;}
+	public string Path {get; set;}
 }
 
 /// <summary>
@@ -78,6 +88,24 @@ public string GetMyRepositoryName()
 	}
 }
 
+/// <summary>
+///     Set Repository Setting.
+/// </summary>
+/// <param name="target">Target path.</param>
+/// <param name="setting">Repository setting.</param>
+pulic void SetRepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
+	Information("Repository Name: {0}", repositoryName);
+	var repository = new Repository()
+	{
+		TemplateVersion = "1.0",
+		TemplateType = "",
+		Name = repositoryName,
+		Created = DateTime.Now, 
+		Url = remote.Url,
+		Path = path
+	};
+	return repository;
+}
 
 /// <summary>
 ///     Create new RepositorySetting.
@@ -85,26 +113,22 @@ public string GetMyRepositoryName()
 /// <returns>
 /// The RepositorySetting.
 /// </returns>
-public RepositorySetting CreateRepositorySetting(string repositoryName, string version = "1.0")
+public RepositorySetting CreateRepositorySetting(Repository repository)
 {
-	var repositorySetting = new RepositorySetting { Version = version,
-													Created = DateTime.Now, 
-													Name = repositoryName};
+	// .repository
+	var repositorySetting = new RepositorySetting { Version = repository.TemplateVersion,
+													Type = repository.TemplateType,
+													Created = repository.Created, 
+													Name = repository.Name};
+	return repositorySetting;
 }
 
-/// <summary>
-///     Set Repository Setting.
-/// </summary>
-/// <param name="target">Target path.</param>
-/// <param name="setting">Repository setting.</param>
-pulic void SetRepositorySetting(DirectoryPath target, RepositorySetting repositorySetting)
+public void SetRepositorySettingFile(DirectoryPath target, RepositorySetting repositorySetting)
 {
 	var repositorySettingFilePath = target.GetFilePath(".repository");
 	Information("Set repositorySetting file {0}", repositorySettingFilePath);
 	Context.SerializeJsonToPrettyFile<RepositorySetting>(repositorySettingFilePath, repositorySetting);
 }
-
-
 
 public bool IsRepositorySettingExists(DirectoryPath target)
 {
@@ -154,6 +178,8 @@ public void CreateRepositoryFiles(DirectoryPath target, DirectoryPath templatePa
 	CreateRepositoryReadMe(target, templatePath, setting);
 	CreateRepositoryReleasesFile(target, templatePath, setting);
 	CreateRepositoryLicenseFile(target, templatePath, setting);
+
+	CreateRepositoryDirectories(target, templatePath, setting);
 }
 
 public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
@@ -254,7 +280,7 @@ public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath tem
 /// <param name="setting">Repository setting.</param>
 public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath templatePath, RepositorySetting setting)
 {
-	var licenseTemplateFilePath = templatePath.GetFilePath("LICENSE.md.template");
+	var licenseTemplateFilePath = templatePath.GetFilePath("LICENSE.template");
 	if(!System.IO.File.Exists(licenseTemplateFilePath.FullPath))
 	{
 		Information("License Template File {0} not exists.", licenseTemplateFilePath.FullPath);
