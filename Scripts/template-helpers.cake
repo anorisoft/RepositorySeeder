@@ -14,7 +14,7 @@ public void CopyFileFromTemplate(string fileName, string templateFileName, Direc
 	if(!System.IO.File.Exists(templateFilePath.FullPath))
 	{
 		Debug("No template file {0}", templateFilePath.FullPath);
-		throw new Exception("No template file {0}", filePath.FullPath);
+		throw new Exception("No template file " + templateFilePath.FullPath);
 	}
 	
 	var filePath = target.GetFilePath(fileName);
@@ -25,38 +25,38 @@ public void CopyFileFromTemplate(string fileName, string templateFileName, Direc
 		if (System.IO.File.Exists(filePath.FullPath))
 		{
 			Debug("Can't remove file {0}", filePath.FullPath);
-			throw new Exception("Can't remove file {0}", filePath.FullPath);
+			throw new Exception("Can't remove file " + filePath.FullPath);
 		}
 	}
 
 	Debug("Copy file {0}", filePath.FullPath);
-	System.IO.File.Copy(templateFilePath, filePath);
+	System.IO.File.Copy(templateFilePath.FullPath, filePath.FullPath);
 	
     if (!System.IO.File.Exists(filePath.FullPath))
 	{
 		Debug("Can't copy file {0}", filePath.FullPath);
-		throw new Exception("Can't copy file {0}", filePath.FullPath);
+		throw new Exception("Can't copy file " + filePath.FullPath);
 	}
 	Information("Add file: {0}", filePath.FullPath);
 }
 
 public void CreateDirectory(string directoryName, DirectoryPath target)
 {
-	var sourcePath = target.GetDirectoryPath(directoryName);
-	if (Directory.Exists(sourcePath)) 
+	var sourcePath = target.Combine(directoryName);
+	if (System.IO.Directory.Exists(sourcePath.FullPath)) 
 	{
 		Debug("{0} Directory already exists {1}", directoryName, sourcePath.FullPath);
 	}
 	else
 	{
-		Directory.CreateDirectory(sourcePath.FullPath);
-		if (Directory.Exists(sourcePath)) 
+		System.IO.Directory.CreateDirectory(sourcePath.FullPath);
+		if (System.IO.Directory.Exists(sourcePath.FullPath)) 
 		{
 			Debug("{0} Directory created {1}", directoryName, sourcePath.FullPath);
 		}
 		else
 		{
-			throw new Exception("Can't create {0} directory {1}", directoryName, sourcePath.FullPath);
+			throw new Exception("Can't create " + directoryName + " directory " + sourcePath.FullPath);
 		}
 	}
 }
@@ -71,11 +71,11 @@ public void CreateDirectory(string directoryName, DirectoryPath target)
 /// <param name="templatePath">Template path.</param>
 public void CreateFileFromTemplate(string fileName, string templateFileName, IDictionary<string,string> replaceDictionary, DirectoryPath target, DirectoryPath templatePath)
 {
-	var templateFilePath = templatePath.GetFilePath(templateName);
+	var templateFilePath = templatePath.GetFilePath(templateFileName);
 	if(!System.IO.File.Exists(templateFilePath.FullPath))
 	{
 		Debug("No template file {0}", templateFilePath.FullPath);
-		throw new Exception("No template file {0}", filePath.FullPath);
+		throw new Exception("No template file " + templateFilePath.FullPath);
 	}
 	
 	var filePath = target.GetFilePath(fileName);
@@ -86,13 +86,13 @@ public void CreateFileFromTemplate(string fileName, string templateFileName, IDi
 		if (System.IO.File.Exists(filePath.FullPath))
 		{
 			Debug("Can't remove file {0}", filePath.FullPath);
-			throw new Exception("Can't remove file {0}", filePath.FullPath);
+			throw new Exception("Can't remove file " + filePath.FullPath);
 		}
 	}
 	
-	Information("Create {0} file {1}", fileName, templateFilePath);
+	Information("Create {0} file {1}", fileName, templateFilePath.FullPath);
 	var templateString = System.IO.File.ReadAllText(templateFilePath.FullPath);
-	var stringBuilder = new StringBuilder(readmeString);
+	var stringBuilder = new StringBuilder(templateString);
     foreach (var replace in replaceDictionary)
     {
         Debug("Replace {0} with {1}", replace.Key, replace.Value);
@@ -104,7 +104,7 @@ public void CreateFileFromTemplate(string fileName, string templateFileName, IDi
     if (!System.IO.File.Exists(filePath.FullPath))
 	{
 		Debug("Can't copy file {0}", filePath.FullPath);
-		throw new Exception("Can't copy file {0}", filePath.FullPath);
+		throw new Exception("Can't copy file " + filePath.FullPath);
 	}
 	Information("Add file: {0}", filePath.FullPath);
 }

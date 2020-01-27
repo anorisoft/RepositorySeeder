@@ -50,6 +50,7 @@ public Repository GetMyRepository()
 		{
 			throw new Exception("RootDirectoryPath is null.");
 		}
+		
 		//ToDo Check Path
 		Debug("Git Branch Current from {0}", BuildParameters.RootDirectoryPath);
 		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
@@ -199,7 +200,7 @@ public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath temp
 /// <param name="repository">Repository setting.</param>
 public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	Information("Create README File {0}", readmeTemplateFilePath);
+	Information("Create README File {0}", templatePath);
 	var replaces = new Dictionary<string, string>();
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);
@@ -215,7 +216,7 @@ public void CreateRepositoryReadMe(DirectoryPath target, DirectoryPath templateP
 /// <param name="repository">Repository setting.</param>
 public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	Information("Create Releases File {0}", releasesTemplateFilePath);
+	Information("Create Releases File {0}", templatePath);
 	var replaces = new Dictionary<string, string>();
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);
@@ -231,7 +232,7 @@ public void CreateRepositoryReleasesFile(DirectoryPath target, DirectoryPath tem
 /// <param name="repository">Repository setting.</param>
 public void CreateRepositoryLicenseFile(DirectoryPath target, DirectoryPath templatePath, Repository repository)
 {
-	Information("Create License File {0}", licenseTemplateFilePath);
+	Information("Create License File {0}", templatePath);
 	var replaces = new Dictionary<string, string>();
 	replaces.Add("%RepositoryName%", repository.Name);
 	replaces.Add("%SolutionName%", repository.Name);

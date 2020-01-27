@@ -46,6 +46,7 @@ public string GetMyRepositoryName()
 		{
 			thwow new Exception("RootDirectoryPath is null.");
 		}
+		
 		//ToDo Check Path
 		Debug("Git Branch Current from {0}", BuildParameters.RootDirectoryPath)
 		var branch = GitBranchCurrent(BuildParameters.RootDirectoryPath);
