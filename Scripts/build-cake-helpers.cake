@@ -9,15 +9,15 @@
 public void CreateCakeBuildFiles(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
 {
 	CreateBuildCakeFile(target, templatePath, solution);
-	CopyFileFromTemplate(".appveyor.yml", target, templatePath);
-	CopyFileFromTemplate(".gitattributes", target, templatePath);
-	CopyFileFromTemplate(".gitignore", target, templatePath);
-	CopyFileFromTemplate("GitVersion.yml", target, templatePath);	
-	CopyFileFromTemplate("Run.cake", target, templatePath);
-	CopyFileFromTemplate("Run.cmd", target, templatePath);
-	CopyFileFromTemplate("RunAppVeyor.cmd", target, templatePath);
-	CopyFileFromTemplate("RunNuGet.cake", target, templatePath);
-	CopyFileFromTemplate("RunNuGet.cmd", target, templatePath);
+	CopyFileFromTemplate(".appveyor.yml", ".appveyor.yml.template", target, templatePath);
+	CopyFileFromTemplate(".gitattributes", ".gitattributes.template", target, templatePath);
+	CopyFileFromTemplate(".gitignore", ".gitignore.template", target, templatePath);
+	CopyFileFromTemplate("GitVersion.yml", "GitVersion.yml.template", target, templatePath);	
+	CopyFileFromTemplate("Run.cake", "Run.cake.template", target, templatePath);
+	CopyFileFromTemplate("Run.cmd", "Run.cmd.template", target, templatePath);
+	CopyFileFromTemplate("RunAppVeyor.cmd", "RunAppVeyor.cmd.template", target, templatePath);
+	CopyFileFromTemplate("RunNuGet.cake", "RunNuGet.cake.template", target, templatePath);
+	CopyFileFromTemplate("RunNuGet.cmd", "RunNuGet.cmd.template", target, templatePath);
 }
 
 public void CreateBuildCakeFile(DirectoryPath target, DirectoryPath templatePath, VisualStudioSolution solution)
