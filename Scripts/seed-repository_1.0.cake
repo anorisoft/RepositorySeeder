@@ -19,7 +19,7 @@ public void Seed_1_0()
 		
 		Debug("Get Repository");
 		var repository = GetMyRepository();
-		Debug("Repository Name: {0}", repositoryName);
+		Debug("Repository Name: {0}", repository.Name);
 
 		Debug("Get Target Path");
 		var target = BuildParameters.RootDirectoryPath;
@@ -34,13 +34,12 @@ public void Seed_1_0()
 		var repositorySetting = CreateRepositorySetting(repository);
 		
 		Debug("Set Repository Setting");
-		SaveRepositorySetting(target, repositoryName);
+		SaveRepositorySettingFile(target, repositorySetting);
 		
 		Debug("Create Repository Files");
 		CreateRepositoryFiles(target, templatePath, repository);
 		
-		var mainProject = new VisualStudioProject(repository.Name,
-				solutionSetting.MainProjectGuid)
+		var mainProject = new VisualStudioProject(repository.Name, new Guid())
 			{
 				Authors = "Martin Egli",
 				Company = "Anori Soft",
@@ -51,10 +50,10 @@ public void Seed_1_0()
 				AssemblyOriginatorKeyFile = @"..\public.snk"
 			};
 			
-		var solution = new VisualStudioSolution(mainProject, solutionName: repositoryName);
+		var solution = new VisualStudioSolution(mainProject, solutionName: repository.Name);
 		
 		CreateCakeBuildFiles(target, templatePath, solution);
-		CreateSolution16Files(target, templatePath, solution);
+		CreateVisualStudioSolution16Files(target, templatePath, solution, repository);
 				
 		Information("Comit Repository Seeding");
 	

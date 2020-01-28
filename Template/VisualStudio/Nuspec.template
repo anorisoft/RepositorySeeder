@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>Martin Egli</authors>
+    <owners>Anori Soft</owners>
+    <title>$title$</title>
+    <description>$description$</description>
+    <copyright>$copyright$</copyright>
+    <!--
+    <licenseUrl></licenseUrl>
+    <projectUrl></projectUrl>
+    <iconUrl></iconUrl>
+-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags />
+    <dependencies>
+      <dependency id="JetBrains.Annotations" version="2018.3.0" />
+    </dependencies>
+  </metadata>
+</package>

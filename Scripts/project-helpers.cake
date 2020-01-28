@@ -44,12 +44,11 @@ public class VisualStudioProject
 	public string TemplatePath {get; set;} = "";
 }
 
-public void CreateProject(DirectoryPath target, VisualStudioProject project, string templatePath = "")
+public void CreateProject(DirectoryPath target, DirectoryPath templatePath, VisualStudioProject project)
 {
 	DirectoryPath projectDirectory = GetProjectDirectory(target, project);
-	DirectoryPath templateDirectory = GetTemplateDirectory(target, project, templatePath);
-	CreateProjectFile(projectDirectory, project, templateDirectory);
-	CreateRepositoryStyleCopJson(projectDirectory, project, templateDirectory);
+	CreateProjectFile(projectDirectory, project, templatePath);
+	CreateRepositoryStyleCopJson(projectDirectory, project, templatePath);
 }
 
 public DirectoryPath GetProjectDirectory(DirectoryPath target, VisualStudioProject project)
@@ -174,10 +173,10 @@ public void CreateRepositoryStyleCopJson(DirectoryPath projectDirectory, VisualS
 }
 
 
-public void CreateProjectFramework472(DirectoryPath target, VisualStudioSolution setting)
+public void CreateProjectFramework472(DirectoryPath target, DirectoryPath templatePath , VisualStudioSolution setting)
 {
 	// Solution
-	var projectTemplateFilePath = target.Combine("Source").GetFilePath("Project.Framework.4.7.2.csproj.template");
+	var projectTemplateFilePath = templatePath.GetFilePath("Project.Framework.4.7.2.csproj.template");
 	if(!System.IO.File.Exists(projectTemplateFilePath.FullPath))
 	{
 		Information("Project Template File {0} not exists.", projectTemplateFilePath.FullPath);

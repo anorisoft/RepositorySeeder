@@ -1,0 +1,16 @@
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyTitle("%Assembly_Title%")]
+[assembly: AssemblyDescription("%Assembly_Description%")]
+[assembly: AssemblyConfiguration("%Assembly_Configuration%")]
+[assembly: AssemblyCompany("%Assembly_Company%")]
+[assembly: AssemblyProduct("%Assembly_Product%")]
+[assembly: AssemblyCopyright("%Assembly_Copyright%")]
+[assembly: AssemblyTrademark("%Assembly_Trademark%")]
+[assembly: AssemblyCulture("")]
+[assembly: ComVisible(false)]
+[assembly: Guid("%Project_GUID%")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

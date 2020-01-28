@@ -6,7 +6,7 @@
 // The script contains the functions for creating and managing the repository.
 // Author: Martin Egli
 // -----------------------------------------------------------------------
-
+#load ./Tools/GlobalSettings/Seed.cake
 /// <summary>
 ///     The Repository Setting Class
 /// </summary>
@@ -26,7 +26,7 @@ public class Repository{
 	public string Path {get; set;}
 	public string SourceFolder {get; set;} = "Source";
 	public string DocumentationFolder {get; set;} = "Documentation";
-	public string TestFolder {get; set;} = "Tests";
+	public string TestsFolder {get; set;} = "Tests";
 	public string ToolsFolder {get; set;} = "Tools";
 }
 
@@ -36,16 +36,12 @@ public class Repository{
 /// <returns>
 /// The repository name.
 /// </returns>
+
 public Repository GetMyRepository()
 {
 	Debug("Begin GetMyRepository");
 	try
 	{
-		if (BuildParameters == null)
-		{
-			throw new Exception("BuildParameters is null.");
-		}
-		
 		if (BuildParameters.RootDirectoryPath == null)	
 		{
 			throw new Exception("RootDirectoryPath is null.");
@@ -188,7 +184,7 @@ public void CreateRepositoryDirectories(DirectoryPath target, DirectoryPath temp
 {
 	CreateDirectory(repository.SourceFolder, target);
 	CreateDirectory(repository.DocumentationFolder, target);
-	CreateDirectory(repository.TestFolder, target);
+	CreateDirectory(repository.TestsFolder, target);
 	CreateDirectory(repository.ToolsFolder, target);
 }
 

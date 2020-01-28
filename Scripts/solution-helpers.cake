@@ -13,7 +13,7 @@ public class VisualStudioSolution
 
 		if (unitTestProject != null)
 		{
-			UnitTestProjec = unitTestProject;
+			UnitTestProject = unitTestProject;
 			UnitTestProjectName = unitTestProject.ProjectName;
 			UnitTestProjectGuid = unitTestProject.ProjectGuid;
 		}
@@ -33,7 +33,7 @@ public class VisualStudioSolution
 	}
 	
 	public VisualStudioProject MainProject {get; set;} = null;
-	public VisualStudioProject UnitTestProjec {get; set;} = null;
+	public VisualStudioProject UnitTestProject {get; set;} = null;
 	public string MainProjectName {get; set;}
 	public string UnitTestProjectName {get; set;}
 	public string SolutionName {get; set;}
@@ -48,18 +48,19 @@ public class VisualStudioSolution
 public void CreateVisualStudioSolution16Files(
 	DirectoryPath target, 
 	DirectoryPath templatePath, 
-	VisualStudioSolution solution)
+	VisualStudioSolution solution,
+	Repository repository)
 {
-	var solutionDirectoryPath = target.Combine(solution.SourceFolder);
+	var solutionDirectoryPath = target.Combine(repository.SourceFolder);
 	var solutionTemplateDirectoryPath = templatePath.Combine("VisualStudio");
 		
-	if (unitTestProject == null)
+	if (solution == null)
 	{
 		CreateSolution16File(solutionDirectoryPath, solutionTemplateDirectoryPath, solution); 
 	}
 	else
 	{
-		var testsPath = target.Combine(solution.TestsFolder);
+		var testsPath = target.Combine(repository.TestsFolder);
 		CreateSolutionUnitTest16File(solutionDirectoryPath, solutionTemplateDirectoryPath, solution);
 		CreateProject(testsPath, solutionTemplateDirectoryPath, solution.UnitTestProject);
 	}
