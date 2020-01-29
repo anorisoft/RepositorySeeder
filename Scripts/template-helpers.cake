@@ -10,7 +10,7 @@ public void CopyFileFromTemplate(string fileName, DirectoryPath target, Director
 
 public void CopyFileFromTemplate(string fileName, string templateFileName, DirectoryPath target, DirectoryPath templatePath)
 {
-	var templateFilePath = templatePath.GetFilePath(fileName);
+	var templateFilePath = templatePath.GetFilePath(templateFileName);
 	if(!System.IO.File.Exists(templateFilePath.FullPath))
 	{
 		Debug("No template file {0}", templateFilePath.FullPath);

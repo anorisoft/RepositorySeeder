@@ -6,7 +6,7 @@
 // The script contains the functions for creating and managing the repository.
 // Author: Martin Egli
 // -----------------------------------------------------------------------
-#load ./Tools/GlobalSettings/Seed.cake
+
 /// <summary>
 ///     The Repository Setting Class
 /// </summary>
