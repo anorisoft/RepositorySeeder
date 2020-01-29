@@ -54,7 +54,7 @@ public void CreateVisualStudioSolution16Files(
 	var solutionDirectoryPath = target.Combine(repository.SourceFolder);
 	var solutionTemplateDirectoryPath = templatePath.Combine("VisualStudio");
 		
-	if (solution == null)
+	if (solution.UnitTestProject == null)
 	{
 		CreateSolution16File(solutionDirectoryPath, solutionTemplateDirectoryPath, solution); 
 	}
