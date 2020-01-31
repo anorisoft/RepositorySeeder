@@ -52,6 +52,8 @@ public void CreateVisualStudioSolution16Files(
 	Repository repository)
 {
 	var solutionDirectoryPath = target.Combine(repository.SourceFolder);
+	Information("Source Path {0}", solutionDirectoryPath);
+
 	var solutionTemplateDirectoryPath = templatePath.Combine("VisualStudio");
 		
 	if (solution.UnitTestProject == null)

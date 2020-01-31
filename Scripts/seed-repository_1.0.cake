@@ -39,14 +39,14 @@ public void Seed_1_0()
 		Debug("Create Repository Files");
 		CreateRepositoryFiles(target, templatePath, repository);
 		
-		var mainProject = new VisualStudioProject(repository.Name, new Guid())
+		var mainProject = new VisualStudioProject(repository.Name, Guid.NewGuid())
 			{
 				Authors = "Martin Egli",
 				Company = "Anori Soft",
 				PackageLicenseUrl = repository.Url + @"/LICENCE",
 				PackageProjectUrl = repository.Url,
 				RepositoryUrl = repository.Url,
-				ProjectPath = repository.SourceFolder + @"\" + repository.Name,
+				ProjectPath =  repository.Name,
 				AssemblyOriginatorKeyFile = @"..\public.snk"
 			};
 			
