@@ -57,7 +57,7 @@ public DirectoryPath GetProjectDirectory(DirectoryPath target, VisualStudioProje
 	
 	if (string.IsNullOrEmpty(project.ProjectPath))
 	{
-		projectDirectory = target.Combine("Source").Combine(project.ProjectName);
+		projectDirectory = target.Combine(project.ProjectName);
 	}
 	else
 	{
